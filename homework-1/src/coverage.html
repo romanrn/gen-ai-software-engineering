@@ -1,0 +1,787 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>api: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/reznikrn/banking-api/cmd/api/main.go (73.3%)</option>
+				
+				<option value="file1">github.com/reznikrn/banking-api/cmd/api/server.go (100.0%)</option>
+				
+				<option value="file2">github.com/reznikrn/banking-api/internal/adapters/in/http/account_handler.go (77.8%)</option>
+				
+				<option value="file3">github.com/reznikrn/banking-api/internal/adapters/in/http/transaction_handler.go (89.3%)</option>
+				
+				<option value="file4">github.com/reznikrn/banking-api/internal/adapters/out/memory/transaction_repository.go (100.0%)</option>
+				
+				<option value="file5">github.com/reznikrn/banking-api/internal/domain/errors.go (100.0%)</option>
+				
+				<option value="file6">github.com/reznikrn/banking-api/internal/service/transaction_service.go (83.3%)</option>
+				
+				<option value="file7">github.com/reznikrn/banking-api/internal/service/validator.go (95.2%)</option>
+				
+				<option value="file8">github.com/reznikrn/banking-api/pkg/errorhandler/error_handler.go (100.0%)</option>
+				
+				<option value="file9">github.com/reznikrn/banking-api/pkg/logger/logger.go (100.0%)</option>
+				
+				<option value="file10">github.com/reznikrn/banking-api/pkg/middleware/logger.go (100.0%)</option>
+				
+				<option value="file11">github.com/reznikrn/banking-api/pkg/middleware/request_id.go (100.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package main
+
+import (
+        "log/slog"
+        "os"
+
+        "github.com/gofiber/fiber/v2"
+        handler "github.com/reznikrn/banking-api/internal/adapters/in/http"
+        "github.com/reznikrn/banking-api/internal/adapters/out/memory"
+        "github.com/reznikrn/banking-api/internal/service"
+        "github.com/reznikrn/banking-api/pkg/logger"
+)
+
+func main() <span class="cov0" title="0">{
+        if err := run(func(app *fiber.App, addr string) error </span><span class="cov0" title="0">{
+                return app.Listen(addr)
+        }</span>); err != nil <span class="cov0" title="0">{
+                slog.Error("server failed to start", "error", err)
+                os.Exit(1)
+        }</span>
+}
+
+func run(listen func(app *fiber.App, addr string) error) error <span class="cov8" title="1">{
+        logger.Setup()
+
+        repo := memory.NewTransactionRepository()
+        svc := service.NewTransactionService(repo)
+
+        txHandler := handler.NewTransactionHandler(svc)
+        accHandler := handler.NewAccountHandler(svc)
+
+        app := newServer(txHandler, accHandler)
+
+        port := os.Getenv("PORT")
+        if port == "" </span><span class="cov8" title="1">{
+                port = "8080"
+        }</span>
+
+        <span class="cov8" title="1">slog.Info("starting server", "port", port)
+        return listen(app, ":"+port)</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package main
+
+import (
+        "github.com/gofiber/fiber/v2"
+        "github.com/gofiber/fiber/v2/middleware/recover"
+        handler "github.com/reznikrn/banking-api/internal/adapters/in/http"
+        "github.com/reznikrn/banking-api/pkg/errorhandler"
+        "github.com/reznikrn/banking-api/pkg/middleware"
+)
+
+func newServer(txHandler *handler.TransactionHandler, accHandler *handler.AccountHandler) *fiber.App <span class="cov8" title="1">{
+        app := fiber.New(fiber.Config{
+                ErrorHandler: errorhandler.Handler,
+        })
+
+        app.Use(recover.New(recover.Config{EnableStackTrace: true}))
+        app.Use(middleware.RequestID())
+        app.Use(middleware.Logger())
+
+        app.Get("/health", func(c *fiber.Ctx) error </span><span class="cov8" title="1">{
+                return c.JSON(fiber.Map{"status": "ok"})
+        }</span>)
+
+        <span class="cov8" title="1">app.Post("/transactions", txHandler.Create)
+        app.Get("/transactions", txHandler.List)
+        app.Get("/transactions/:id", txHandler.GetByID)
+
+        app.Get("/accounts/:accountId/balance", accHandler.GetBalance)
+        app.Get("/accounts/:accountId/summary", accHandler.GetSummary)
+
+        return app</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package handler
+
+import (
+        "github.com/gofiber/fiber/v2"
+        portin "github.com/reznikrn/banking-api/internal/ports/in"
+)
+
+type AccountHandler struct {
+        service portin.TransactionService
+}
+
+func NewAccountHandler(service portin.TransactionService) *AccountHandler <span class="cov8" title="1">{
+        return &amp;AccountHandler{service: service}
+}</span>
+
+func (h *AccountHandler) GetBalance(c *fiber.Ctx) error <span class="cov8" title="1">{
+        balance, err := h.service.GetAccountBalance(c.UserContext(), c.Params("accountId"))
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return c.JSON(balance)</span>
+}
+
+func (h *AccountHandler) GetSummary(c *fiber.Ctx) error <span class="cov8" title="1">{
+        summary, err := h.service.GetAccountSummary(c.UserContext(), c.Params("accountId"))
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return c.JSON(summary)</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package handler
+
+import (
+        "time"
+
+        "github.com/gofiber/fiber/v2"
+        portin "github.com/reznikrn/banking-api/internal/ports/in"
+)
+
+type TransactionHandler struct {
+        service portin.TransactionService
+}
+
+func NewTransactionHandler(service portin.TransactionService) *TransactionHandler <span class="cov8" title="1">{
+        return &amp;TransactionHandler{service: service}
+}</span>
+
+type createTransactionRequest struct {
+        FromAccount string  `json:"fromAccount"`
+        ToAccount   string  `json:"toAccount"`
+        Amount      float64 `json:"amount"`
+        Currency    string  `json:"currency"`
+        Type        string  `json:"type"`
+}
+
+func (h *TransactionHandler) Create(c *fiber.Ctx) error <span class="cov8" title="1">{
+        var req createTransactionRequest
+        if err := c.BodyParser(&amp;req); err != nil </span><span class="cov8" title="1">{
+                return fiber.NewError(fiber.StatusBadRequest, "invalid request body")
+        }</span>
+
+        <span class="cov8" title="1">tx, err := h.service.CreateTransaction(c.UserContext(), portin.CreateTransactionInput{
+                FromAccount: req.FromAccount,
+                ToAccount:   req.ToAccount,
+                Amount:      req.Amount,
+                Currency:    req.Currency,
+                Type:        req.Type,
+        })
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return c.Status(fiber.StatusCreated).JSON(tx)</span>
+}
+
+func (h *TransactionHandler) List(c *fiber.Ctx) error <span class="cov8" title="1">{
+        filter := portin.TransactionFilter{
+                AccountID: c.Query("accountId"),
+                Type:      c.Query("type"),
+        }
+
+        if from := c.Query("from"); from != "" </span><span class="cov8" title="1">{
+                t, err := time.Parse("2006-01-02", from)
+                if err != nil </span><span class="cov8" title="1">{
+                        return fiber.NewError(fiber.StatusBadRequest, "invalid 'from' date, expected YYYY-MM-DD")
+                }</span>
+                <span class="cov8" title="1">filter.From = &amp;t</span>
+        }
+
+        <span class="cov8" title="1">if to := c.Query("to"); to != "" </span><span class="cov8" title="1">{
+                t, err := time.Parse("2006-01-02", to)
+                if err != nil </span><span class="cov8" title="1">{
+                        return fiber.NewError(fiber.StatusBadRequest, "invalid 'to' date, expected YYYY-MM-DD")
+                }</span>
+                // include the full end day
+                <span class="cov8" title="1">t = t.Add(24*time.Hour - time.Millisecond)
+                filter.To = &amp;t</span>
+        }
+
+        <span class="cov8" title="1">txs, err := h.service.ListTransactions(c.UserContext(), filter)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return c.JSON(txs)</span>
+}
+
+func (h *TransactionHandler) GetByID(c *fiber.Ctx) error <span class="cov8" title="1">{
+        tx, err := h.service.GetTransaction(c.UserContext(), c.Params("id"))
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return c.JSON(tx)</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package memory
+
+import (
+        "context"
+        "sync"
+
+        "github.com/reznikrn/banking-api/internal/domain"
+        portout "github.com/reznikrn/banking-api/internal/ports/out"
+)
+
+type transactionRepository struct {
+        mu   sync.RWMutex
+        data map[string]*domain.Transaction
+}
+
+func NewTransactionRepository() portout.TransactionRepository <span class="cov8" title="1">{
+        return &amp;transactionRepository{
+                data: make(map[string]*domain.Transaction),
+        }
+}</span>
+
+func (r *transactionRepository) Save(_ context.Context, tx *domain.Transaction) error <span class="cov8" title="1">{
+        r.mu.Lock()
+        defer r.mu.Unlock()
+        r.data[tx.ID] = tx
+        return nil
+}</span>
+
+func (r *transactionRepository) FindByID(_ context.Context, id string) (*domain.Transaction, error) <span class="cov8" title="1">{
+        r.mu.RLock()
+        defer r.mu.RUnlock()
+
+        tx, ok := r.data[id]
+        if !ok </span><span class="cov8" title="1">{
+                return nil, domain.ErrNotFound
+        }</span>
+        <span class="cov8" title="1">return tx, nil</span>
+}
+
+func (r *transactionRepository) FindAll(_ context.Context) ([]*domain.Transaction, error) <span class="cov8" title="1">{
+        r.mu.RLock()
+        defer r.mu.RUnlock()
+
+        result := make([]*domain.Transaction, 0, len(r.data))
+        for _, tx := range r.data </span><span class="cov8" title="1">{
+                result = append(result, tx)
+        }</span>
+        <span class="cov8" title="1">return result, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package domain
+
+import "errors"
+
+var (
+        ErrNotFound     = errors.New("not found")
+        ErrInvalidInput = errors.New("invalid input")
+        ErrInternal     = errors.New("internal error")
+)
+
+type ValidationDetail struct {
+        Field   string `json:"field"`
+        Message string `json:"message"`
+}
+
+type ErrValidation struct {
+        Details []ValidationDetail
+}
+
+func (e *ErrValidation) Error() string <span class="cov8" title="1">{
+        return "validation failed"
+}</span>
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package service
+
+import (
+        "context"
+        "strings"
+        "time"
+
+        "github.com/google/uuid"
+        "github.com/reznikrn/banking-api/internal/domain"
+        portin "github.com/reznikrn/banking-api/internal/ports/in"
+        portout "github.com/reznikrn/banking-api/internal/ports/out"
+)
+
+type transactionService struct {
+        repo portout.TransactionRepository
+}
+
+func NewTransactionService(repo portout.TransactionRepository) portin.TransactionService <span class="cov8" title="1">{
+        return &amp;transactionService{repo: repo}
+}</span>
+
+func (s *transactionService) CreateTransaction(ctx context.Context, input portin.CreateTransactionInput) (*domain.Transaction, error) <span class="cov8" title="1">{
+        if err := validateCreateInput(input); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">tx := &amp;domain.Transaction{
+                ID:          uuid.New().String(),
+                FromAccount: input.FromAccount,
+                ToAccount:   input.ToAccount,
+                Amount:      input.Amount,
+                Currency:    strings.ToUpper(input.Currency),
+                Type:        domain.TransactionType(strings.ToLower(input.Type)),
+                Timestamp:   time.Now().UTC(),
+                Status:      domain.StatusCompleted,
+        }
+
+        if err := s.repo.Save(ctx, tx); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return tx, nil</span>
+}
+
+func (s *transactionService) GetTransaction(ctx context.Context, id string) (*domain.Transaction, error) <span class="cov8" title="1">{
+        return s.repo.FindByID(ctx, id)
+}</span>
+
+func (s *transactionService) ListTransactions(ctx context.Context, filter portin.TransactionFilter) ([]domain.Transaction, error) <span class="cov8" title="1">{
+        all, err := s.repo.FindAll(ctx)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">result := make([]domain.Transaction, 0)
+        for _, tx := range all </span><span class="cov8" title="1">{
+                if matchesFilter(tx, filter) </span><span class="cov8" title="1">{
+                        result = append(result, *tx)
+                }</span>
+        }
+        <span class="cov8" title="1">return result, nil</span>
+}
+
+func (s *transactionService) GetAccountBalance(ctx context.Context, accountID string) (*domain.AccountBalance, error) <span class="cov8" title="1">{
+        all, err := s.repo.FindAll(ctx)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">var balance float64
+        var currency string
+        found := false
+
+        for _, tx := range all </span><span class="cov8" title="1">{
+                if tx.Status != domain.StatusCompleted </span><span class="cov8" title="1">{
+                        continue</span>
+                }
+                <span class="cov8" title="1">if tx.FromAccount != accountID &amp;&amp; tx.ToAccount != accountID </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov8" title="1">found = true
+                currency = tx.Currency
+
+                switch tx.Type </span>{
+                case domain.TypeDeposit:<span class="cov8" title="1">
+                        if tx.ToAccount == accountID </span><span class="cov8" title="1">{
+                                balance += tx.Amount
+                        }</span>
+                case domain.TypeWithdrawal:<span class="cov8" title="1">
+                        if tx.FromAccount == accountID </span><span class="cov8" title="1">{
+                                balance -= tx.Amount
+                        }</span>
+                case domain.TypeTransfer:<span class="cov8" title="1">
+                        if tx.ToAccount == accountID </span><span class="cov0" title="0">{
+                                balance += tx.Amount
+                        }</span>
+                        <span class="cov8" title="1">if tx.FromAccount == accountID </span><span class="cov8" title="1">{
+                                balance -= tx.Amount
+                        }</span>
+                }
+        }
+
+        <span class="cov8" title="1">if !found </span><span class="cov8" title="1">{
+                return nil, domain.ErrNotFound
+        }</span>
+
+        <span class="cov8" title="1">return &amp;domain.AccountBalance{
+                AccountID: accountID,
+                Balance:   balance,
+                Currency:  currency,
+        }, nil</span>
+}
+
+func (s *transactionService) GetAccountSummary(ctx context.Context, accountID string) (*domain.AccountSummary, error) <span class="cov8" title="1">{
+        all, err := s.repo.FindAll(ctx)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">summary := &amp;domain.AccountSummary{AccountID: accountID}
+        found := false
+
+        for _, tx := range all </span><span class="cov8" title="1">{
+                if tx.FromAccount != accountID &amp;&amp; tx.ToAccount != accountID </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov8" title="1">found = true
+                summary.TransactionCount++
+
+                if tx.Timestamp.After(summary.LastTransactionDate) </span><span class="cov8" title="1">{
+                        summary.LastTransactionDate = tx.Timestamp
+                }</span>
+
+                <span class="cov8" title="1">switch tx.Type </span>{
+                case domain.TypeDeposit:<span class="cov8" title="1">
+                        summary.TotalDeposits += tx.Amount</span>
+                case domain.TypeWithdrawal:<span class="cov8" title="1">
+                        summary.TotalWithdrawals += tx.Amount</span>
+                case domain.TypeTransfer:<span class="cov8" title="1">
+                        if tx.ToAccount == accountID </span><span class="cov0" title="0">{
+                                summary.TotalDeposits += tx.Amount
+                        }</span>
+                        <span class="cov8" title="1">if tx.FromAccount == accountID </span><span class="cov8" title="1">{
+                                summary.TotalWithdrawals += tx.Amount
+                        }</span>
+                }
+        }
+
+        <span class="cov8" title="1">if !found </span><span class="cov8" title="1">{
+                return nil, domain.ErrNotFound
+        }</span>
+
+        <span class="cov8" title="1">return summary, nil</span>
+}
+
+func matchesFilter(tx *domain.Transaction, f portin.TransactionFilter) bool <span class="cov8" title="1">{
+        if f.AccountID != "" &amp;&amp; tx.FromAccount != f.AccountID &amp;&amp; tx.ToAccount != f.AccountID </span><span class="cov8" title="1">{
+                return false
+        }</span>
+        <span class="cov8" title="1">if f.Type != "" &amp;&amp; string(tx.Type) != strings.ToLower(f.Type) </span><span class="cov0" title="0">{
+                return false
+        }</span>
+        <span class="cov8" title="1">if f.From != nil &amp;&amp; tx.Timestamp.Before(*f.From) </span><span class="cov0" title="0">{
+                return false
+        }</span>
+        <span class="cov8" title="1">if f.To != nil &amp;&amp; tx.Timestamp.After(*f.To) </span><span class="cov0" title="0">{
+                return false
+        }</span>
+        <span class="cov8" title="1">return true</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package service
+
+import (
+        "regexp"
+        "strconv"
+        "strings"
+
+        "github.com/reznikrn/banking-api/internal/domain"
+        portin "github.com/reznikrn/banking-api/internal/ports/in"
+)
+
+var accountRegex = regexp.MustCompile(`(?i)^ACC-[A-Z0-9]{5}$`)
+
+var validCurrencies = map[string]struct{}{
+        "USD": {}, "EUR": {}, "GBP": {}, "JPY": {}, "CHF": {},
+        "AUD": {}, "CAD": {}, "CNY": {}, "HKD": {}, "SGD": {},
+        "NOK": {}, "SEK": {}, "DKK": {}, "NZD": {}, "MXN": {},
+        "INR": {}, "BRL": {}, "ZAR": {}, "RUB": {}, "TRY": {},
+        "PLN": {}, "THB": {}, "IDR": {}, "HUF": {}, "CZK": {},
+        "ILS": {}, "CLP": {}, "PHP": {}, "AED": {}, "COP": {},
+}
+
+var validTypes = map[string]struct{}{
+        "deposit": {}, "withdrawal": {}, "transfer": {},
+}
+
+func validateCreateInput(input portin.CreateTransactionInput) error <span class="cov8" title="1">{
+        var details []domain.ValidationDetail
+
+        if input.Amount &lt;= 0 </span><span class="cov8" title="1">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "amount",
+                        Message: "must be a positive number",
+                })
+        }</span> else<span class="cov8" title="1"> if !hasTwoDecimalsMax(input.Amount) </span><span class="cov8" title="1">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "amount",
+                        Message: "must have at most 2 decimal places",
+                })
+        }</span>
+
+        <span class="cov8" title="1">if !accountRegex.MatchString(input.FromAccount) </span><span class="cov0" title="0">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "fromAccount",
+                        Message: "must match format ACC-XXXXX (alphanumeric)",
+                })
+        }</span>
+
+        <span class="cov8" title="1">txType := strings.ToLower(input.Type)
+        if txType == "transfer" &amp;&amp; !accountRegex.MatchString(input.ToAccount) </span><span class="cov8" title="1">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "toAccount",
+                        Message: "must match format ACC-XXXXX (alphanumeric) for transfer type",
+                })
+        }</span>
+
+        <span class="cov8" title="1">if _, ok := validCurrencies[strings.ToUpper(input.Currency)]; !ok </span><span class="cov8" title="1">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "currency",
+                        Message: "invalid ISO 4217 currency code",
+                })
+        }</span>
+
+        <span class="cov8" title="1">if _, ok := validTypes[txType]; !ok </span><span class="cov8" title="1">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "type",
+                        Message: "must be one of: deposit, withdrawal, transfer",
+                })
+        }</span>
+
+        <span class="cov8" title="1">if len(details) &gt; 0 </span><span class="cov8" title="1">{
+                return &amp;domain.ErrValidation{Details: details}
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}
+
+// hasTwoDecimalsMax avoids float64 precision issues by checking the string representation.
+func hasTwoDecimalsMax(v float64) bool <span class="cov8" title="1">{
+        s := strconv.FormatFloat(v, 'f', -1, 64)
+        if dot := strings.IndexByte(s, '.'); dot &gt;= 0 </span><span class="cov8" title="1">{
+                return len(s)-dot-1 &lt;= 2
+        }</span>
+        <span class="cov8" title="1">return true</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package errorhandler
+
+import (
+        "errors"
+        "log/slog"
+
+        "github.com/gofiber/fiber/v2"
+        "github.com/reznikrn/banking-api/internal/domain"
+        "github.com/reznikrn/banking-api/pkg/middleware"
+)
+
+func Handler(c *fiber.Ctx, err error) error <span class="cov8" title="1">{
+        requestID, _ := c.Locals(middleware.RequestIDKey).(string)
+
+        var valErr *domain.ErrValidation
+        if errors.As(err, &amp;valErr) </span><span class="cov8" title="1">{
+                return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
+                        "error":      "Validation failed",
+                        "request_id": requestID,
+                        "details":    valErr.Details,
+                })
+        }</span>
+
+        <span class="cov8" title="1">if errors.Is(err, domain.ErrNotFound) </span><span class="cov8" title="1">{
+                return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+                        "error":      "Not found",
+                        "request_id": requestID,
+                        "details":    []any{},
+                })
+        }</span>
+
+        <span class="cov8" title="1">if errors.Is(err, domain.ErrInvalidInput) </span><span class="cov8" title="1">{
+                return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+                        "error":      err.Error(),
+                        "request_id": requestID,
+                        "details":    []any{},
+                })
+        }</span>
+
+        <span class="cov8" title="1">var fiberErr *fiber.Error
+        if errors.As(err, &amp;fiberErr) </span><span class="cov8" title="1">{
+                return c.Status(fiberErr.Code).JSON(fiber.Map{
+                        "error":      fiberErr.Message,
+                        "request_id": requestID,
+                        "details":    []any{},
+                })
+        }</span>
+
+        <span class="cov8" title="1">slog.Error("unhandled error", "request_id", requestID, "error", err)
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+                "error":      "Internal server error",
+                "request_id": requestID,
+                "details":    []any{},
+        })</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package logger
+
+import (
+        "log/slog"
+        "os"
+        "strings"
+)
+
+func Setup() <span class="cov8" title="1">{
+        level := slog.LevelInfo
+
+        switch strings.ToUpper(os.Getenv("LOG_LEVEL")) </span>{
+        case "DEBUG":<span class="cov8" title="1">
+                level = slog.LevelDebug</span>
+        case "WARN":<span class="cov8" title="1">
+                level = slog.LevelWarn</span>
+        case "ERROR":<span class="cov8" title="1">
+                level = slog.LevelError</span>
+        }
+
+        <span class="cov8" title="1">handler := slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{Level: level})
+        slog.SetDefault(slog.New(handler))</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package middleware
+
+import (
+        "log/slog"
+        "time"
+
+        "github.com/gofiber/fiber/v2"
+)
+
+func Logger() fiber.Handler <span class="cov8" title="1">{
+        return func(c *fiber.Ctx) error </span><span class="cov8" title="1">{
+                start := time.Now()
+                err := c.Next()
+
+                slog.Info("request",
+                        "request_id", c.Locals(RequestIDKey),
+                        "method", c.Method(),
+                        "path", c.Path(),
+                        "status", c.Response().StatusCode(),
+                        "latency_ms", time.Since(start).Milliseconds(),
+                )
+
+                return err
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package middleware
+
+import (
+        "github.com/gofiber/fiber/v2"
+        "github.com/google/uuid"
+)
+
+const RequestIDKey = "request_id"
+
+func RequestID() fiber.Handler <span class="cov8" title="1">{
+        return func(c *fiber.Ctx) error </span><span class="cov8" title="1">{
+                requestID := c.Get("X-Request-ID")
+                if requestID == "" </span><span class="cov8" title="1">{
+                        requestID = uuid.New().String()
+                }</span>
+
+                <span class="cov8" title="1">c.Locals(RequestIDKey, requestID)
+                c.Set("X-Request-ID", requestID)
+
+                return c.Next()</span>
+        }
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

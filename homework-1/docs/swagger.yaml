@@ -1,0 +1,263 @@
+basePath: /
+definitions:
+  domain.AccountBalance:
+    properties:
+      accountId:
+        type: string
+      balance:
+        type: number
+      currency:
+        type: string
+    type: object
+  domain.AccountSummary:
+    properties:
+      accountId:
+        type: string
+      lastTransactionDate:
+        type: string
+      totalDeposits:
+        type: number
+      totalWithdrawals:
+        type: number
+      transactionCount:
+        type: integer
+    type: object
+  domain.Transaction:
+    properties:
+      amount:
+        type: number
+      currency:
+        type: string
+      fromAccount:
+        type: string
+      id:
+        type: string
+      status:
+        $ref: '#/definitions/domain.TransactionStatus'
+      timestamp:
+        type: string
+      toAccount:
+        type: string
+      type:
+        $ref: '#/definitions/domain.TransactionType'
+    type: object
+  domain.TransactionStatus:
+    enum:
+    - pending
+    - completed
+    - failed
+    type: string
+    x-enum-varnames:
+    - StatusPending
+    - StatusCompleted
+    - StatusFailed
+  domain.TransactionType:
+    enum:
+    - deposit
+    - withdrawal
+    - transfer
+    type: string
+    x-enum-varnames:
+    - TypeDeposit
+    - TypeWithdrawal
+    - TypeTransfer
+  handler.CreateTransactionRequest:
+    properties:
+      amount:
+        type: number
+      currency:
+        type: string
+      fromAccount:
+        type: string
+      toAccount:
+        type: string
+      type:
+        type: string
+    type: object
+  handler.ErrorResponse:
+    properties:
+      details:
+        items: {}
+        type: array
+      error:
+        type: string
+      request_id:
+        type: string
+    type: object
+  handler.HealthResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  handler.ValidationDetail:
+    properties:
+      field:
+        type: string
+      message:
+        type: string
+    type: object
+  handler.ValidationErrorResponse:
+    properties:
+      details:
+        items:
+          $ref: '#/definitions/handler.ValidationDetail'
+        type: array
+      error:
+        type: string
+      request_id:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: REST API for creating and querying banking transactions.
+  title: Banking Transactions API
+  version: "1.0"
+paths:
+  /accounts/{accountId}/balance:
+    get:
+      parameters:
+      - description: Account ID
+        in: path
+        name: accountId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.AccountBalance'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get account balance
+      tags:
+      - Accounts
+  /accounts/{accountId}/summary:
+    get:
+      parameters:
+      - description: Account ID
+        in: path
+        name: accountId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.AccountSummary'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get account summary
+      tags:
+      - Accounts
+  /health:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.HealthResponse'
+      summary: Health check
+      tags:
+      - Health
+  /transactions:
+    get:
+      parameters:
+      - description: Filter by account
+        in: query
+        name: accountId
+        type: string
+      - description: Filter by type
+        enum:
+        - deposit
+        - withdrawal
+        - transfer
+        in: query
+        name: type
+        type: string
+      - description: Start date YYYY-MM-DD
+        in: query
+        name: from
+        type: string
+      - description: End date YYYY-MM-DD
+        in: query
+        name: to
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Transaction'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: List transactions
+      tags:
+      - Transactions
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Transaction payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.Transaction'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handler.ValidationErrorResponse'
+      summary: Create a transaction
+      tags:
+      - Transactions
+  /transactions/{id}:
+    get:
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Transaction'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get transaction by ID
+      tags:
+      - Transactions
+schemes:
+- http
+swagger: "2.0"
