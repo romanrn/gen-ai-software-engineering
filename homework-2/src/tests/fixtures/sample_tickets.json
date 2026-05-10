@@ -1,0 +1,282 @@
+[
+  {
+    "customer_id": "CUST_J001",
+    "customer_email": "michael.johnson@example.com",
+    "customer_name": "Michael Johnson",
+    "subject": "Login credentials not working",
+    "description": "I cannot sign in to my account. The password field is not accepting my input. Getting an access denied error.",
+    "category": "account_access",
+    "priority": "urgent",
+    "metadata": {
+      "source": "web_form",
+      "browser": "Chrome",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "CUST_J002",
+    "customer_email": "sarah.wilson@example.com",
+    "customer_name": "Sarah Wilson",
+    "subject": "Database error on page load",
+    "description": "When I try to load the dashboard, I get a database error message. The application breaks completely. This is blocking my work.",
+    "category": "technical_issue",
+    "priority": "high",
+    "metadata": {
+      "source": "email",
+      "browser": "Firefox",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "CUST_J003",
+    "customer_email": "david.brown@example.com",
+    "customer_name": "David Brown",
+    "subject": "Double charge on invoice",
+    "description": "I was charged twice for my monthly subscription. The billing is showing duplicate charges and I need a refund immediately.",
+    "category": "billing_question",
+    "priority": "high",
+    "metadata": {
+      "source": "api",
+      "browser": "Safari",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "CUST_J004",
+    "customer_email": "jessica.martinez@example.com",
+    "customer_name": "Jessica Martinez",
+    "subject": "Add email notification settings",
+    "description": "I would like the ability to customize which notifications I receive via email. This would be a great enhancement for user experience.",
+    "category": "feature_request",
+    "priority": "low",
+    "metadata": {
+      "source": "chat",
+      "browser": "Chrome",
+      "device_type": "mobile"
+    }
+  },
+  {
+    "customer_id": "CUST_J005",
+    "customer_email": "robert.taylor@example.com",
+    "customer_name": "Robert Taylor",
+    "subject": "Data not saving properly",
+    "description": "When I fill out a form and click save, the data is not being stored. I have to reproduce the same steps multiple times. This is a defect.",
+    "category": "bug_report",
+    "priority": "high",
+    "metadata": {
+      "source": "web_form",
+      "browser": "Edge",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "CUST_J006",
+    "customer_email": "jennifer.anderson@example.com",
+    "customer_name": "Jennifer Anderson",
+    "subject": "Two-factor auth not working",
+    "description": "My 2FA is broken and I cannot access my account. I'm locked out completely. This is urgent.",
+    "category": "account_access",
+    "priority": "urgent",
+    "metadata": {
+      "source": "phone",
+      "browser": "Firefox",
+      "device_type": "mobile"
+    }
+  },
+  {
+    "customer_id": "CUST_J007",
+    "customer_email": "william.thomas@example.com",
+    "customer_name": "William Thomas",
+    "subject": "Payment declined repeatedly",
+    "description": "My credit card is being declined even though it should be valid. I need to pay my invoice but the system keeps rejecting it.",
+    "category": "billing_question",
+    "priority": "urgent",
+    "metadata": {
+      "source": "email",
+      "browser": "Chrome",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "CUST_J008",
+    "customer_email": "patricia.jackson@example.com",
+    "customer_name": "Patricia Jackson",
+    "subject": "Dark mode would be nice",
+    "description": "Would love to have a dark mode option for late-night usage. This is a suggestion for enhancing the user interface.",
+    "category": "feature_request",
+    "priority": "low",
+    "metadata": {
+      "source": "chat",
+      "browser": "Safari",
+      "device_type": "tablet"
+    }
+  },
+  {
+    "customer_id": "CUST_J009",
+    "customer_email": "christopher.white@example.com",
+    "customer_name": "Christopher White",
+    "subject": "API connection timeout error",
+    "description": "Getting timeout errors when connecting to the API. The connection is not stable. This is critical for production.",
+    "category": "technical_issue",
+    "priority": "urgent",
+    "metadata": {
+      "source": "api",
+      "browser": "Chrome",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "CUST_J010",
+    "customer_email": "nancy.harris@example.com",
+    "customer_name": "Nancy Harris",
+    "subject": "Missing refund on account",
+    "description": "I requested a refund 3 weeks ago but it hasn't been processed. I need to check on the status of my refund request.",
+    "category": "billing_question",
+    "priority": "high",
+    "metadata": {
+      "source": "web_form",
+      "browser": "Firefox",
+      "device_type": "mobile"
+    }
+  },
+  {
+    "customer_id": "CUST_J011",
+    "customer_email": "daniel.martin@example.com",
+    "customer_name": "Daniel Martin",
+    "subject": "Account access issue",
+    "description": "I can't log in to my account. Getting an error that says access is denied. I need immediate help regaining access.",
+    "category": "account_access",
+    "priority": "urgent",
+    "metadata": {
+      "source": "phone",
+      "browser": "Safari",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "CUST_J012",
+    "customer_email": "barbara.garcia@example.com",
+    "customer_name": "Barbara Garcia",
+    "subject": "Server response is very slow",
+    "description": "The application is extremely slow. Every action takes 20+ seconds. The performance is unacceptable.",
+    "category": "technical_issue",
+    "priority": "high",
+    "metadata": {
+      "source": "email",
+      "browser": "Edge",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "CUST_J013",
+    "customer_email": "richard.rodriguez@example.com",
+    "customer_name": "Richard Rodriguez",
+    "subject": "API documentation improvements",
+    "description": "Would like more detailed documentation with code examples for the REST API. This would help developers understand better.",
+    "category": "feature_request",
+    "priority": "medium",
+    "metadata": {
+      "source": "api",
+      "browser": "Chrome",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "CUST_J014",
+    "customer_email": "susan.lewis@example.com",
+    "customer_name": "Susan Lewis",
+    "subject": "Typo in error message",
+    "description": "There's a spelling mistake in the validation error message. It's a minor cosmetic issue but should be fixed.",
+    "category": "bug_report",
+    "priority": "low",
+    "metadata": {
+      "source": "chat",
+      "browser": "Firefox",
+      "device_type": "mobile"
+    }
+  },
+  {
+    "customer_id": "CUST_J015",
+    "customer_email": "joseph.lee@example.com",
+    "customer_name": "Joseph Lee",
+    "subject": "Service is completely down",
+    "description": "The entire service is unavailable. All endpoints are failing. This is a critical production outage that needs immediate attention.",
+    "category": "technical_issue",
+    "priority": "urgent",
+    "metadata": {
+      "source": "web_form",
+      "browser": "Chrome",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "CUST_J016",
+    "customer_email": "margaret.walker@example.com",
+    "customer_name": "Margaret Walker",
+    "subject": "Unable to reset my password",
+    "description": "I requested a password reset but never received the email. My account is now locked out and I can't access anything.",
+    "category": "account_access",
+    "priority": "urgent",
+    "metadata": {
+      "source": "email",
+      "browser": "Safari",
+      "device_type": "mobile"
+    }
+  },
+  {
+    "customer_id": "CUST_J017",
+    "customer_email": "thomas.hall@example.com",
+    "customer_name": "Thomas Hall",
+    "subject": "Batch processing feature",
+    "description": "Could we have the ability to process multiple files in batch? When possible, this would save a lot of manual work.",
+    "category": "feature_request",
+    "priority": "low",
+    "metadata": {
+      "source": "api",
+      "browser": "Chrome",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "CUST_J018",
+    "customer_email": "carol.young@example.com",
+    "customer_name": "Carol Young",
+    "subject": "File upload returns error",
+    "description": "When I try to upload a file, I get an error message. The upload feature is broken and won't accept any files.",
+    "category": "bug_report",
+    "priority": "high",
+    "metadata": {
+      "source": "web_form",
+      "browser": "Firefox",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "CUST_J019",
+    "customer_email": "mark.hernandez@example.com",
+    "customer_name": "Mark Hernandez",
+    "subject": "Security vulnerability detected",
+    "description": "I found a critical security vulnerability in the login system. This is a security issue that could breach user data. Urgent!",
+    "category": "technical_issue",
+    "priority": "urgent",
+    "metadata": {
+      "source": "api",
+      "browser": "Edge",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "CUST_J020",
+    "customer_email": "diane.moore@example.com",
+    "customer_name": "Diane Moore",
+    "subject": "Invoice statement incorrect",
+    "description": "My billing statement is showing incorrect charges. The invoice amounts don't match what I was expecting.",
+    "category": "billing_question",
+    "priority": "high",
+    "metadata": {
+      "source": "email",
+      "browser": "Chrome",
+      "device_type": "mobile"
+    }
+  }
+]

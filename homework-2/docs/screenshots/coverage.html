@@ -1,0 +1,1485 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>api: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">support-tickets/cmd/api/main.go (0.0%)</option>
+				
+				<option value="file1">support-tickets/cmd/api/server.go (100.0%)</option>
+				
+				<option value="file2">support-tickets/internal/adapters/in/http/handler.go (83.1%)</option>
+				
+				<option value="file3">support-tickets/internal/adapters/out/memory/ticket_repository.go (84.4%)</option>
+				
+				<option value="file4">support-tickets/internal/domain/errors.go (100.0%)</option>
+				
+				<option value="file5">support-tickets/internal/domain/ticket.go (100.0%)</option>
+				
+				<option value="file6">support-tickets/internal/service/classifier.go (97.1%)</option>
+				
+				<option value="file7">support-tickets/internal/service/ticket_service.go (82.9%)</option>
+				
+				<option value="file8">support-tickets/internal/service/validator.go (92.0%)</option>
+				
+				<option value="file9">support-tickets/pkg/errorhandler/handler.go (100.0%)</option>
+				
+				<option value="file10">support-tickets/pkg/importer/csv.go (92.0%)</option>
+				
+				<option value="file11">support-tickets/pkg/importer/importer.go (100.0%)</option>
+				
+				<option value="file12">support-tickets/pkg/importer/json.go (100.0%)</option>
+				
+				<option value="file13">support-tickets/pkg/importer/xml.go (100.0%)</option>
+				
+				<option value="file14">support-tickets/pkg/middleware/request_id.go (100.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package main
+
+import (
+        "log"
+        "os"
+        handler "support-tickets/internal/adapters/in/http"
+        "support-tickets/internal/adapters/out/memory"
+        "support-tickets/internal/service"
+
+        _ "support-tickets/docs"
+)
+
+// @title Intelligent Customer Support System
+// @version 1.0
+// @description A customer support ticket management system with auto-classification
+// @basePath /
+func main() <span class="cov0" title="0">{
+        port := os.Getenv("PORT")
+        if port == "" </span><span class="cov0" title="0">{
+                port = "8080"
+        }</span>
+
+        // Initialize repository
+        <span class="cov0" title="0">repo := memory.New()
+
+        // Initialize service
+        svc := service.NewTicketService(repo)
+
+        // Initialize handlers
+        hdlr := handler.New(svc)
+
+        // Setup and run server
+        app := setupServer(hdlr)
+
+        log.Printf("Starting server on port %s", port)
+        if err := app.Listen(":" + port); err != nil </span><span class="cov0" title="0">{
+                log.Fatalf("Failed to start server: %v", err)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package main
+
+import (
+        handler "support-tickets/internal/adapters/in/http"
+        "support-tickets/pkg/errorhandler"
+        "support-tickets/pkg/middleware"
+
+        "github.com/gofiber/fiber/v2"
+        fiberlogger "github.com/gofiber/fiber/v2/middleware/logger"
+        "github.com/gofiber/fiber/v2/middleware/recover"
+        "github.com/gofiber/swagger"
+)
+
+func setupServer(hdlr *handler.Handler) *fiber.App <span class="cov8" title="1">{
+        app := fiber.New(fiber.Config{
+                ErrorHandler: errorhandler.Handler,
+        })
+
+        // Middleware
+        app.Use(middleware.RequestID)
+        app.Use(fiberlogger.New())
+        app.Use(recover.New())
+
+        // Health check
+        app.Get("/health", func(c *fiber.Ctx) error </span><span class="cov8" title="1">{
+                return c.JSON(fiber.Map{"status": "ok"})
+        }</span>)
+
+        // Swagger documentation
+        <span class="cov8" title="1">app.Get("/swagger/*", swagger.HandlerDefault)
+
+        // API routes
+        api := app.Group("/tickets")
+        </span><span class="cov8" title="1">{
+                api.Post("", hdlr.CreateTicket)
+                api.Post("/import", hdlr.BulkImport)
+                api.Get("", hdlr.ListTickets)
+                api.Get("/:id", hdlr.GetTicket)
+                api.Put("/:id", hdlr.UpdateTicket)
+                api.Delete("/:id", hdlr.DeleteTicket)
+                api.Post("/:id/auto-classify", hdlr.AutoClassify)
+        }</span>
+
+        <span class="cov8" title="1">return app</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package handler
+
+import (
+        "io"
+        "strings"
+        "support-tickets/internal/domain"
+        "support-tickets/internal/ports/in"
+
+        "github.com/gofiber/fiber/v2"
+)
+
+type Handler struct {
+        service in.TicketService
+}
+
+func New(service in.TicketService) *Handler <span class="cov8" title="1">{
+        return &amp;Handler{service: service}
+}</span>
+
+type CreateTicketRequest struct {
+        CustomerID    string                `json:"customer_id" form:"customer_id"`
+        CustomerEmail string                `json:"customer_email" form:"customer_email"`
+        CustomerName  string                `json:"customer_name" form:"customer_name"`
+        Subject       string                `json:"subject" form:"subject"`
+        Description   string                `json:"description" form:"description"`
+        Category      string                `json:"category" form:"category"`
+        Priority      string                `json:"priority" form:"priority"`
+        Metadata      *TicketMetadataInput  `json:"metadata,omitempty" form:"metadata,omitempty"`
+}
+
+type TicketMetadataInput struct {
+        Source     string `json:"source"`
+        Browser    string `json:"browser"`
+        DeviceType string `json:"device_type"`
+}
+
+// CreateTicket godoc
+// @Summary Create a new support ticket
+// @Description Create a new support ticket with optional auto-classification
+// @Tags tickets
+// @Accept json
+// @Produce json
+// @Param request body CreateTicketRequest true "Ticket request"
+// @Param auto_classify query boolean false "Auto-classify ticket"
+// @Success 201 {object} domain.Ticket
+// @Failure 400 {object} errorhandler.ErrorResponse
+// @Router /tickets [post]
+func (h *Handler) CreateTicket(c *fiber.Ctx) error <span class="cov8" title="1">{
+        var req CreateTicketRequest
+        if err := c.BodyParser(&amp;req); err != nil </span><span class="cov0" title="0">{
+                return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
+        }</span>
+
+        <span class="cov8" title="1">metadata := domain.TicketMetadata{}
+        if req.Metadata != nil </span><span class="cov8" title="1">{
+                metadata = domain.TicketMetadata{
+                        Source:     domain.Source(req.Metadata.Source),
+                        Browser:    req.Metadata.Browser,
+                        DeviceType: domain.DeviceType(req.Metadata.DeviceType),
+                }
+        }</span>
+
+        <span class="cov8" title="1">ticket, err := h.service.Create(
+                req.CustomerID,
+                req.CustomerEmail,
+                req.CustomerName,
+                req.Subject,
+                req.Description,
+                domain.Category(req.Category),
+                domain.Priority(req.Priority),
+                metadata,
+        )
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return c.Status(fiber.StatusCreated).JSON(ticket)</span>
+}
+
+// BulkImport godoc
+// @Summary Bulk import tickets from file
+// @Description Import tickets from CSV, JSON, or XML file
+// @Tags tickets
+// @Accept multipart/form-data
+// @Produce json
+// @Param file formData file true "File to import (CSV, JSON, or XML)"
+// @Success 200 {object} in.BulkImportResult
+// @Failure 400 {object} errorhandler.ErrorResponse
+// @Router /tickets/import [post]
+func (h *Handler) BulkImport(c *fiber.Ctx) error <span class="cov8" title="1">{
+        file, err := c.FormFile("file")
+        if err != nil </span><span class="cov8" title="1">{
+                return &amp;domain.ErrInvalidInput{Message: "file is required"}
+        }</span>
+
+        <span class="cov8" title="1">src, err := file.Open()
+        if err != nil </span><span class="cov0" title="0">{
+                return &amp;domain.ErrInvalidInput{Message: "failed to open file"}
+        }</span>
+        <span class="cov8" title="1">defer src.Close()
+
+        data, err := io.ReadAll(src)
+        if err != nil </span><span class="cov0" title="0">{
+                return &amp;domain.ErrInvalidInput{Message: "failed to read file"}
+        }</span>
+
+        // Detect format
+        <span class="cov8" title="1">format := "json"
+        if strings.HasSuffix(file.Filename, ".csv") </span><span class="cov8" title="1">{
+                format = "csv"
+        }</span> else<span class="cov0" title="0"> if strings.HasSuffix(file.Filename, ".xml") </span><span class="cov0" title="0">{
+                format = "xml"
+        }</span>
+
+        <span class="cov8" title="1">contentType := c.FormValue("format")
+        if contentType != "" </span><span class="cov0" title="0">{
+                format = contentType
+        }</span>
+
+        <span class="cov8" title="1">result, err := h.service.BulkImport(format, data)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return c.JSON(result)</span>
+}
+
+// ListTickets godoc
+// @Summary List all tickets
+// @Description List tickets with optional filtering
+// @Tags tickets
+// @Produce json
+// @Param status query string false "Filter by status"
+// @Param category query string false "Filter by category"
+// @Param priority query string false "Filter by priority"
+// @Param customer_id query string false "Filter by customer_id"
+// @Success 200 {array} domain.Ticket
+// @Router /tickets [get]
+func (h *Handler) ListTickets(c *fiber.Ctx) error <span class="cov8" title="1">{
+        req := &amp;in.TicketListRequest{
+                Status:     getQueryParam(c, "status"),
+                Category:   getQueryParam(c, "category"),
+                Priority:   getQueryParam(c, "priority"),
+                CustomerID: getQueryParam(c, "customer_id"),
+        }
+
+        tickets, err := h.service.List(req)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">if tickets == nil </span><span class="cov8" title="1">{
+                tickets = []*domain.Ticket{}
+        }</span>
+
+        <span class="cov8" title="1">return c.JSON(tickets)</span>
+}
+
+// GetTicket godoc
+// @Summary Get a ticket by ID
+// @Description Get a specific ticket
+// @Tags tickets
+// @Produce json
+// @Param id path string true "Ticket ID"
+// @Success 200 {object} domain.Ticket
+// @Failure 404 {object} errorhandler.ErrorResponse
+// @Router /tickets/{id} [get]
+func (h *Handler) GetTicket(c *fiber.Ctx) error <span class="cov8" title="1">{
+        id := c.Params("id")
+        ticket, err := h.service.GetByID(id)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return c.JSON(ticket)</span>
+}
+
+type UpdateTicketRequest struct {
+        Status     *string   `json:"status,omitempty"`
+        Category   *string   `json:"category,omitempty"`
+        Priority   *string   `json:"priority,omitempty"`
+        AssignedTo *string   `json:"assigned_to,omitempty"`
+        Tags       *[]string `json:"tags,omitempty"`
+}
+
+// UpdateTicket godoc
+// @Summary Update a ticket
+// @Description Update ticket fields
+// @Tags tickets
+// @Accept json
+// @Produce json
+// @Param id path string true "Ticket ID"
+// @Param request body UpdateTicketRequest true "Update request"
+// @Success 200 {object} domain.Ticket
+// @Failure 400 {object} errorhandler.ErrorResponse
+// @Failure 404 {object} errorhandler.ErrorResponse
+// @Router /tickets/{id} [put]
+func (h *Handler) UpdateTicket(c *fiber.Ctx) error <span class="cov8" title="1">{
+        id := c.Params("id")
+        var req UpdateTicketRequest
+        if err := c.BodyParser(&amp;req); err != nil </span><span class="cov0" title="0">{
+                return &amp;domain.ErrInvalidInput{Message: "Invalid request body"}
+        }</span>
+
+        <span class="cov8" title="1">updates := make(map[string]interface{})
+        if req.Status != nil </span><span class="cov8" title="1">{
+                updates["status"] = domain.Status(*req.Status)
+        }</span>
+        <span class="cov8" title="1">if req.Category != nil </span><span class="cov0" title="0">{
+                updates["category"] = domain.Category(*req.Category)
+        }</span>
+        <span class="cov8" title="1">if req.Priority != nil </span><span class="cov0" title="0">{
+                updates["priority"] = domain.Priority(*req.Priority)
+        }</span>
+        <span class="cov8" title="1">if req.AssignedTo != nil </span><span class="cov0" title="0">{
+                updates["assigned_to"] = *req.AssignedTo
+        }</span>
+        <span class="cov8" title="1">if req.Tags != nil </span><span class="cov0" title="0">{
+                updates["tags"] = *req.Tags
+        }</span>
+
+        <span class="cov8" title="1">ticket, err := h.service.Update(id, updates)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return c.JSON(ticket)</span>
+}
+
+// DeleteTicket godoc
+// @Summary Delete a ticket
+// @Description Delete a specific ticket
+// @Tags tickets
+// @Param id path string true "Ticket ID"
+// @Success 204
+// @Failure 404 {object} errorhandler.ErrorResponse
+// @Router /tickets/{id} [delete]
+func (h *Handler) DeleteTicket(c *fiber.Ctx) error <span class="cov8" title="1">{
+        id := c.Params("id")
+        if err := h.service.Delete(id); err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return c.SendStatus(fiber.StatusNoContent)</span>
+}
+
+// AutoClassify godoc
+// @Summary Auto-classify a ticket
+// @Description Run auto-classification on a specific ticket
+// @Tags tickets
+// @Produce json
+// @Param id path string true "Ticket ID"
+// @Success 200 {object} domain.Classification
+// @Failure 404 {object} errorhandler.ErrorResponse
+// @Router /tickets/{id}/auto-classify [post]
+func (h *Handler) AutoClassify(c *fiber.Ctx) error <span class="cov8" title="1">{
+        id := c.Params("id")
+        classification, err := h.service.AutoClassify(id)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return c.JSON(classification)</span>
+}
+
+func getQueryParam(c *fiber.Ctx, key string) *string <span class="cov8" title="1">{
+        val := c.Query(key)
+        if val == "" </span><span class="cov8" title="1">{
+                return nil
+        }</span>
+        <span class="cov8" title="1">return &amp;val</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package memory
+
+import (
+        "fmt"
+        "sync"
+        "time"
+        "support-tickets/internal/domain"
+        "support-tickets/internal/ports/out"
+)
+
+type TicketRepository struct {
+        mu      sync.RWMutex
+        tickets map[string]*domain.Ticket
+}
+
+func New() out.TicketRepository <span class="cov8" title="1">{
+        return &amp;TicketRepository{
+                tickets: make(map[string]*domain.Ticket),
+        }
+}</span>
+
+func (r *TicketRepository) Save(ticket *domain.Ticket) error <span class="cov8" title="1">{
+        r.mu.Lock()
+        defer r.mu.Unlock()
+
+        if ticket == nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("ticket cannot be nil")
+        }</span>
+
+        <span class="cov8" title="1">r.tickets[ticket.ID.String()] = ticket
+        return nil</span>
+}
+
+func (r *TicketRepository) FindByID(id string) (*domain.Ticket, error) <span class="cov8" title="1">{
+        r.mu.RLock()
+        defer r.mu.RUnlock()
+
+        ticket, ok := r.tickets[id]
+        if !ok </span><span class="cov8" title="1">{
+                return nil, &amp;domain.ErrNotFound{ID: id}
+        }</span>
+
+        <span class="cov8" title="1">return ticket, nil</span>
+}
+
+func (r *TicketRepository) FindAll(filter *out.TicketFilter) ([]*domain.Ticket, error) <span class="cov8" title="1">{
+        r.mu.RLock()
+        defer r.mu.RUnlock()
+
+        var results []*domain.Ticket
+
+        for _, ticket := range r.tickets </span><span class="cov8" title="1">{
+                if !r.matchesFilter(ticket, filter) </span><span class="cov8" title="1">{
+                        continue</span>
+                }
+                <span class="cov8" title="1">results = append(results, ticket)</span>
+        }
+
+        <span class="cov8" title="1">return results, nil</span>
+}
+
+func (r *TicketRepository) Update(id string, updates map[string]interface{}) (*domain.Ticket, error) <span class="cov8" title="1">{
+        r.mu.Lock()
+        defer r.mu.Unlock()
+
+        ticket, ok := r.tickets[id]
+        if !ok </span><span class="cov8" title="1">{
+                return nil, &amp;domain.ErrNotFound{ID: id}
+        }</span>
+
+        // Apply updates
+        <span class="cov8" title="1">if status, ok := updates["status"]; ok </span><span class="cov8" title="1">{
+                if s, ok := status.(domain.Status); ok </span><span class="cov8" title="1">{
+                        ticket.Status = s
+                }</span>
+        }
+        <span class="cov8" title="1">if priority, ok := updates["priority"]; ok </span><span class="cov8" title="1">{
+                if p, ok := priority.(domain.Priority); ok </span><span class="cov8" title="1">{
+                        ticket.Priority = p
+                }</span>
+        }
+        <span class="cov8" title="1">if category, ok := updates["category"]; ok </span><span class="cov0" title="0">{
+                if c, ok := category.(domain.Category); ok </span><span class="cov0" title="0">{
+                        ticket.Category = c
+                }</span>
+        }
+        <span class="cov8" title="1">if assignedTo, ok := updates["assigned_to"]; ok </span><span class="cov0" title="0">{
+                if s, ok := assignedTo.(string); ok </span><span class="cov0" title="0">{
+                        ticket.AssignedTo = &amp;s
+                }</span>
+        }
+        <span class="cov8" title="1">if tags, ok := updates["tags"]; ok </span><span class="cov0" title="0">{
+                if t, ok := tags.([]string); ok </span><span class="cov0" title="0">{
+                        ticket.Tags = t
+                }</span>
+        }
+        <span class="cov8" title="1">if classification, ok := updates["classification"]; ok </span><span class="cov8" title="1">{
+                if c, ok := classification.(*domain.Classification); ok </span><span class="cov8" title="1">{
+                        ticket.Classification = c
+                }</span>
+        }
+
+        // Update timestamp
+        <span class="cov8" title="1">now := time.Now().UTC()
+        ticket.UpdatedAt = now
+
+        return ticket, nil</span>
+}
+
+func (r *TicketRepository) Delete(id string) error <span class="cov8" title="1">{
+        r.mu.Lock()
+        defer r.mu.Unlock()
+
+        if _, ok := r.tickets[id]; !ok </span><span class="cov8" title="1">{
+                return &amp;domain.ErrNotFound{ID: id}
+        }</span>
+
+        <span class="cov8" title="1">delete(r.tickets, id)
+        return nil</span>
+}
+
+func (r *TicketRepository) matchesFilter(ticket *domain.Ticket, filter *out.TicketFilter) bool <span class="cov8" title="1">{
+        if filter == nil </span><span class="cov8" title="1">{
+                return true
+        }</span>
+
+        <span class="cov8" title="1">if filter.Status != nil &amp;&amp; ticket.Status != domain.Status(*filter.Status) </span><span class="cov8" title="1">{
+                return false
+        }</span>
+
+        <span class="cov8" title="1">if filter.Category != nil &amp;&amp; ticket.Category != domain.Category(*filter.Category) </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov8" title="1">if filter.Priority != nil &amp;&amp; ticket.Priority != domain.Priority(*filter.Priority) </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov8" title="1">if filter.CustomerID != nil &amp;&amp; ticket.CustomerID != *filter.CustomerID </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov8" title="1">return true</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package domain
+
+import "fmt"
+
+type ValidationDetail struct {
+        Field   string `json:"field"`
+        Message string `json:"message"`
+}
+
+type ErrValidation struct {
+        Details []ValidationDetail
+}
+
+func (e *ErrValidation) Error() string <span class="cov8" title="1">{
+        if len(e.Details) == 0 </span><span class="cov8" title="1">{
+                return "validation error"
+        }</span>
+        <span class="cov8" title="1">return fmt.Sprintf("validation error: %d field(s) invalid", len(e.Details))</span>
+}
+
+type ErrNotFound struct {
+        ID string
+}
+
+func (e *ErrNotFound) Error() string <span class="cov8" title="1">{
+        return fmt.Sprintf("ticket not found: %s", e.ID)
+}</span>
+
+type ErrInvalidInput struct {
+        Message string
+}
+
+func (e *ErrInvalidInput) Error() string <span class="cov8" title="1">{
+        return fmt.Sprintf("invalid input: %s", e.Message)
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package domain
+
+import (
+        "time"
+
+        "github.com/google/uuid"
+)
+
+type Category string
+
+const (
+        CategoryAccountAccess  Category = "account_access"
+        CategoryTechnicalIssue Category = "technical_issue"
+        CategoryBillingQuestion Category = "billing_question"
+        CategoryFeatureRequest  Category = "feature_request"
+        CategoryBugReport       Category = "bug_report"
+        CategoryOther           Category = "other"
+)
+
+type Priority string
+
+const (
+        PriorityUrgent Priority = "urgent"
+        PriorityHigh   Priority = "high"
+        PriorityMedium Priority = "medium"
+        PriorityLow    Priority = "low"
+)
+
+type Status string
+
+const (
+        StatusNew            Status = "new"
+        StatusInProgress     Status = "in_progress"
+        StatusWaitingCustomer Status = "waiting_customer"
+        StatusResolved       Status = "resolved"
+        StatusClosed         Status = "closed"
+)
+
+type Source string
+
+const (
+        SourceWebForm Source = "web_form"
+        SourceEmail   Source = "email"
+        SourceAPI     Source = "api"
+        SourceChat    Source = "chat"
+        SourcePhone   Source = "phone"
+)
+
+type DeviceType string
+
+const (
+        DeviceTypeDesktop DeviceType = "desktop"
+        DeviceTypeMobile  DeviceType = "mobile"
+        DeviceTypeTablet  DeviceType = "tablet"
+)
+
+type TicketMetadata struct {
+        Source     Source     `json:"source"`
+        Browser    string     `json:"browser"`
+        DeviceType DeviceType `json:"device_type"`
+}
+
+type Classification struct {
+        Category   Category `json:"category"`
+        Priority   Priority `json:"priority"`
+        Confidence float64  `json:"confidence"`
+        Reasoning  string   `json:"reasoning"`
+        Keywords   []string `json:"keywords_found"`
+}
+
+type Ticket struct {
+        ID                 uuid.UUID       `json:"id"`
+        CustomerID         string          `json:"customer_id"`
+        CustomerEmail      string          `json:"customer_email"`
+        CustomerName       string          `json:"customer_name"`
+        Subject            string          `json:"subject"`
+        Description        string          `json:"description"`
+        Category           Category        `json:"category"`
+        Priority           Priority        `json:"priority"`
+        Status             Status          `json:"status"`
+        CreatedAt          time.Time       `json:"created_at"`
+        UpdatedAt          time.Time       `json:"updated_at"`
+        ResolvedAt         *time.Time      `json:"resolved_at"`
+        AssignedTo         *string         `json:"assigned_to"`
+        Tags               []string        `json:"tags"`
+        Metadata           TicketMetadata  `json:"metadata"`
+        Classification     *Classification `json:"classification,omitempty"`
+}
+
+func NewTicket(
+        customerID string,
+        customerEmail string,
+        customerName string,
+        subject string,
+        description string,
+        category Category,
+        priority Priority,
+        metadata TicketMetadata,
+) *Ticket <span class="cov8" title="1">{
+        now := time.Now().UTC()
+        return &amp;Ticket{
+                ID:          uuid.New(),
+                CustomerID:  customerID,
+                CustomerEmail: customerEmail,
+                CustomerName: customerName,
+                Subject:     subject,
+                Description: description,
+                Category:    category,
+                Priority:    priority,
+                Status:      StatusNew,
+                CreatedAt:   now,
+                UpdatedAt:   now,
+                Tags:        []string{},
+                Metadata:    metadata,
+        }
+}</span>
+
+func IsValidCategory(c string) bool <span class="cov8" title="1">{
+        switch Category(c) </span>{
+        case CategoryAccountAccess, CategoryTechnicalIssue, CategoryBillingQuestion,
+                CategoryFeatureRequest, CategoryBugReport, CategoryOther:<span class="cov8" title="1">
+                return true</span>
+        }
+        <span class="cov8" title="1">return false</span>
+}
+
+func IsValidPriority(p string) bool <span class="cov8" title="1">{
+        switch Priority(p) </span>{
+        case PriorityUrgent, PriorityHigh, PriorityMedium, PriorityLow:<span class="cov8" title="1">
+                return true</span>
+        }
+        <span class="cov8" title="1">return false</span>
+}
+
+func IsValidStatus(s string) bool <span class="cov8" title="1">{
+        switch Status(s) </span>{
+        case StatusNew, StatusInProgress, StatusWaitingCustomer, StatusResolved, StatusClosed:<span class="cov8" title="1">
+                return true</span>
+        }
+        <span class="cov8" title="1">return false</span>
+}
+
+func IsValidSource(s string) bool <span class="cov8" title="1">{
+        switch Source(s) </span>{
+        case SourceWebForm, SourceEmail, SourceAPI, SourceChat, SourcePhone:<span class="cov8" title="1">
+                return true</span>
+        }
+        <span class="cov8" title="1">return false</span>
+}
+
+func IsValidDeviceType(d string) bool <span class="cov8" title="1">{
+        switch DeviceType(d) </span>{
+        case DeviceTypeDesktop, DeviceTypeMobile, DeviceTypeTablet:<span class="cov8" title="1">
+                return true</span>
+        }
+        <span class="cov8" title="1">return false</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package service
+
+import (
+        "strings"
+        "support-tickets/internal/domain"
+)
+
+type Classifier struct{}
+
+func NewClassifier() *Classifier <span class="cov8" title="1">{
+        return &amp;Classifier{}
+}</span>
+
+var categoryKeywords = map[domain.Category][]string{
+        domain.CategoryAccountAccess: {
+                "login", "password", "2fa", "access", "account", "locked out", "sign in",
+        },
+        domain.CategoryTechnicalIssue: {
+                "error", "crash", "bug", "broken", "not working", "500", "exception", "fail",
+        },
+        domain.CategoryBillingQuestion: {
+                "payment", "invoice", "refund", "charge", "billing", "subscription", "price",
+        },
+        domain.CategoryFeatureRequest: {
+                "feature", "enhancement", "suggestion", "request", "would like", "add support",
+        },
+        domain.CategoryBugReport: {
+                "reproduce", "steps to", "expected", "actual", "defect", "regression",
+        },
+}
+
+var priorityKeywords = map[domain.Priority][]string{
+        domain.PriorityUrgent: {
+                "can't access", "critical", "production down", "security", "outage", "breach",
+        },
+        domain.PriorityHigh: {
+                "important", "blocking", "asap", "urgent", "immediately",
+        },
+        domain.PriorityLow: {
+                "minor", "cosmetic", "nice to have", "when possible",
+        },
+}
+
+func (c *Classifier) Classify(subject, description string) *domain.Classification <span class="cov8" title="1">{
+        text := strings.ToLower(subject + " " + description)
+
+        // Find best matching category
+        bestCategory := domain.CategoryOther
+        bestCategoryScore := 0.0
+        var foundKeywords []string
+
+        for category, keywords := range categoryKeywords </span><span class="cov8" title="1">{
+                matched := 0
+                var categoryMatched []string
+                for _, kw := range keywords </span><span class="cov8" title="1">{
+                        if strings.Contains(text, strings.ToLower(kw)) </span><span class="cov8" title="1">{
+                                matched++
+                                categoryMatched = append(categoryMatched, kw)
+                        }</span>
+                }
+                <span class="cov8" title="1">score := float64(matched) / float64(len(keywords))
+                if score &gt; bestCategoryScore </span><span class="cov8" title="1">{
+                        bestCategoryScore = score
+                        bestCategory = category
+                        foundKeywords = categoryMatched
+                }</span>
+        }
+
+        // Find priority
+        <span class="cov8" title="1">bestPriority := domain.PriorityMedium
+        bestPriorityScore := 0.0
+
+        for priority, keywords := range priorityKeywords </span><span class="cov8" title="1">{
+                matched := 0
+                for _, kw := range keywords </span><span class="cov8" title="1">{
+                        if strings.Contains(text, strings.ToLower(kw)) </span><span class="cov8" title="1">{
+                                matched++
+                        }</span>
+                }
+                <span class="cov8" title="1">score := float64(matched) / float64(len(keywords))
+                if score &gt; bestPriorityScore </span><span class="cov8" title="1">{
+                        bestPriorityScore = score
+                        bestPriority = priority
+                }</span>
+        }
+
+        // Cap confidence at 1.0
+        <span class="cov8" title="1">confidence := bestCategoryScore
+        if confidence &gt; 1.0 </span><span class="cov0" title="0">{
+                confidence = 1.0
+        }</span>
+
+        <span class="cov8" title="1">reasoning := "Matched " + string(bestCategory)
+        if len(foundKeywords) &gt; 0 </span><span class="cov8" title="1">{
+                reasoning += " keywords"
+        }</span>
+
+        <span class="cov8" title="1">return &amp;domain.Classification{
+                Category:   bestCategory,
+                Priority:   bestPriority,
+                Confidence: confidence,
+                Reasoning:  reasoning,
+                Keywords:   foundKeywords,
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package service
+
+import (
+        "fmt"
+        "strings"
+        "support-tickets/internal/domain"
+        "support-tickets/internal/ports/in"
+        "support-tickets/internal/ports/out"
+        "support-tickets/pkg/importer"
+)
+
+type TicketServiceImpl struct {
+        repo       out.TicketRepository
+        validator  *Validator
+        classifier *Classifier
+        importers  map[string]importer.TicketImporter
+}
+
+func NewTicketService(repo out.TicketRepository) *TicketServiceImpl <span class="cov8" title="1">{
+        return &amp;TicketServiceImpl{
+                repo:       repo,
+                validator:  NewValidator(),
+                classifier: NewClassifier(),
+                importers: map[string]importer.TicketImporter{
+                        "csv":  importer.NewCSVImporter(),
+                        "json": importer.NewJSONImporter(),
+                        "xml":  importer.NewXMLImporter(),
+                },
+        }
+}</span>
+
+func (s *TicketServiceImpl) Create(
+        customerID string,
+        email string,
+        name string,
+        subject string,
+        description string,
+        category domain.Category,
+        priority domain.Priority,
+        metadata domain.TicketMetadata,
+) (*domain.Ticket, error) <span class="cov8" title="1">{
+        if err := s.validator.ValidateCreateTicket(customerID, email, name, subject, description, string(category), string(priority)); err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">ticket := domain.NewTicket(customerID, email, name, subject, description, category, priority, metadata)
+        if err := s.repo.Save(ticket); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return ticket, nil</span>
+}
+
+func (s *TicketServiceImpl) BulkImport(format string, data []byte) (*in.BulkImportResult, error) <span class="cov8" title="1">{
+        imp, ok := s.importers[strings.ToLower(format)]
+        if !ok </span><span class="cov8" title="1">{
+                return nil, &amp;domain.ErrInvalidInput{Message: fmt.Sprintf("unsupported format: %s", format)}
+        }</span>
+
+        <span class="cov8" title="1">records, err := imp.Parse(data)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">result := &amp;in.BulkImportResult{
+                Total: len(records),
+        }
+
+        for i, record := range records </span><span class="cov8" title="1">{
+                if err := s.validator.ValidateCreateTicket(
+                        record.CustomerID,
+                        record.CustomerEmail,
+                        record.CustomerName,
+                        record.Subject,
+                        record.Description,
+                        record.Category,
+                        record.Priority,
+                ); err != nil </span><span class="cov8" title="1">{
+                        result.Failed++
+                        result.Errors = append(result.Errors, in.ImportError{
+                                Row:     i + 1,
+                                Message: err.Error(),
+                        })
+                        continue</span>
+                }
+
+                <span class="cov8" title="1">ticket := domain.NewTicket(
+                        record.CustomerID,
+                        record.CustomerEmail,
+                        record.CustomerName,
+                        record.Subject,
+                        record.Description,
+                        domain.Category(record.Category),
+                        domain.Priority(record.Priority),
+                        domain.TicketMetadata{
+                                Source:     domain.Source(record.Metadata.Source),
+                                Browser:    record.Metadata.Browser,
+                                DeviceType: domain.DeviceType(record.Metadata.DeviceType),
+                        },
+                )
+
+                if err := s.repo.Save(ticket); err != nil </span><span class="cov0" title="0">{
+                        result.Failed++
+                        result.Errors = append(result.Errors, in.ImportError{
+                                Row:     i + 1,
+                                Message: fmt.Sprintf("failed to save: %v", err),
+                        })
+                        continue</span>
+                }
+
+                <span class="cov8" title="1">result.Successful++</span>
+        }
+
+        <span class="cov8" title="1">return result, nil</span>
+}
+
+func (s *TicketServiceImpl) List(req *in.TicketListRequest) ([]*domain.Ticket, error) <span class="cov8" title="1">{
+        filter := &amp;out.TicketFilter{
+                Status:     req.Status,
+                Category:   req.Category,
+                Priority:   req.Priority,
+                CustomerID: req.CustomerID,
+        }
+
+        return s.repo.FindAll(filter)
+}</span>
+
+func (s *TicketServiceImpl) GetByID(id string) (*domain.Ticket, error) <span class="cov8" title="1">{
+        return s.repo.FindByID(id)
+}</span>
+
+func (s *TicketServiceImpl) Update(id string, updates map[string]interface{}) (*domain.Ticket, error) <span class="cov8" title="1">{
+        return s.repo.Update(id, updates)
+}</span>
+
+func (s *TicketServiceImpl) Delete(id string) error <span class="cov8" title="1">{
+        return s.repo.Delete(id)
+}</span>
+
+func (s *TicketServiceImpl) AutoClassify(id string) (*domain.Classification, error) <span class="cov8" title="1">{
+        ticket, err := s.repo.FindByID(id)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">if ticket == nil </span><span class="cov0" title="0">{
+                return nil, &amp;domain.ErrNotFound{ID: id}
+        }</span>
+
+        <span class="cov8" title="1">classification := s.classifier.Classify(ticket.Subject, ticket.Description)
+
+        updates := map[string]interface{}{
+                "classification": classification,
+        }
+        if _, err := s.repo.Update(id, updates); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return classification, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package service
+
+import (
+        "regexp"
+        "support-tickets/internal/domain"
+)
+
+var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+
+type Validator struct{}
+
+func NewValidator() *Validator <span class="cov8" title="1">{
+        return &amp;Validator{}
+}</span>
+
+func (v *Validator) ValidateCreateTicket(
+        customerID string,
+        email string,
+        name string,
+        subject string,
+        description string,
+        category string,
+        priority string,
+) *domain.ErrValidation <span class="cov8" title="1">{
+        var details []domain.ValidationDetail
+
+        if customerID == "" </span><span class="cov8" title="1">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "customer_id",
+                        Message: "customer_id is required",
+                })
+        }</span>
+
+        <span class="cov8" title="1">if email == "" </span><span class="cov0" title="0">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "customer_email",
+                        Message: "customer_email is required",
+                })
+        }</span> else<span class="cov8" title="1"> if !emailRegex.MatchString(email) </span><span class="cov8" title="1">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "customer_email",
+                        Message: "customer_email is not a valid email address",
+                })
+        }</span>
+
+        <span class="cov8" title="1">if name == "" </span><span class="cov8" title="1">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "customer_name",
+                        Message: "customer_name is required",
+                })
+        }</span>
+
+        <span class="cov8" title="1">if subject == "" </span><span class="cov8" title="1">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "subject",
+                        Message: "subject is required",
+                })
+        }</span> else<span class="cov8" title="1"> if len(subject) &lt; 1 || len(subject) &gt; 200 </span><span class="cov8" title="1">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "subject",
+                        Message: "subject must be between 1 and 200 characters",
+                })
+        }</span>
+
+        <span class="cov8" title="1">if description == "" </span><span class="cov0" title="0">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "description",
+                        Message: "description is required",
+                })
+        }</span> else<span class="cov8" title="1"> if len(description) &lt; 10 || len(description) &gt; 2000 </span><span class="cov8" title="1">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "description",
+                        Message: "description must be between 10 and 2000 characters",
+                })
+        }</span>
+
+        <span class="cov8" title="1">if !domain.IsValidCategory(category) </span><span class="cov8" title="1">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "category",
+                        Message: "category must be one of: account_access, technical_issue, billing_question, feature_request, bug_report, other",
+                })
+        }</span>
+
+        <span class="cov8" title="1">if !domain.IsValidPriority(priority) </span><span class="cov8" title="1">{
+                details = append(details, domain.ValidationDetail{
+                        Field:   "priority",
+                        Message: "priority must be one of: urgent, high, medium, low",
+                })
+        }</span>
+
+        <span class="cov8" title="1">if len(details) &gt; 0 </span><span class="cov8" title="1">{
+                return &amp;domain.ErrValidation{Details: details}
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package errorhandler
+
+import (
+        "errors"
+        "net/http"
+        "support-tickets/internal/domain"
+
+        "github.com/gofiber/fiber/v2"
+)
+
+type ErrorResponse struct {
+        Error     string                        `json:"error"`
+        RequestID string                        `json:"request_id"`
+        Details   []domain.ValidationDetail `json:"details,omitempty"`
+}
+
+func Handler(c *fiber.Ctx, err error) error <span class="cov8" title="1">{
+        code := http.StatusInternalServerError
+        message := "Internal Server Error"
+        var details []domain.ValidationDetail
+
+        requestID := c.Locals("request_id")
+
+        var validationErr *domain.ErrValidation
+        var notFoundErr *domain.ErrNotFound
+        var invalidInputErr *domain.ErrInvalidInput
+
+        if errors.As(err, &amp;validationErr) </span><span class="cov8" title="1">{
+                code = http.StatusBadRequest
+                message = "Validation Error"
+                details = validationErr.Details
+        }</span> else<span class="cov8" title="1"> if errors.As(err, &amp;notFoundErr) </span><span class="cov8" title="1">{
+                code = http.StatusNotFound
+                message = notFoundErr.Error()
+        }</span> else<span class="cov8" title="1"> if errors.As(err, &amp;invalidInputErr) </span><span class="cov8" title="1">{
+                code = http.StatusBadRequest
+                message = invalidInputErr.Error()
+        }</span>
+
+        <span class="cov8" title="1">return c.Status(code).JSON(ErrorResponse{
+                Error:     message,
+                RequestID: requestID.(string),
+                Details:   details,
+        })</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package importer
+
+import (
+        "bytes"
+        "encoding/csv"
+        "fmt"
+)
+
+type csvImporter struct{}
+
+func (c *csvImporter) Parse(data []byte) ([]ImportRecord, error) <span class="cov8" title="1">{
+        reader := csv.NewReader(bytes.NewReader(data))
+
+        records, err := reader.ReadAll()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("failed to parse CSV: %w", err)
+        }</span>
+
+        <span class="cov8" title="1">if len(records) == 0 </span><span class="cov8" title="1">{
+                return nil, nil
+        }</span>
+
+        <span class="cov8" title="1">headers := records[0]
+        var results []ImportRecord
+
+        // Map headers to column indices
+        headerMap := make(map[string]int)
+        for i, h := range headers </span><span class="cov8" title="1">{
+                headerMap[h] = i
+        }</span>
+
+        // Parse records
+        <span class="cov8" title="1">for i := 1; i &lt; len(records); i++ </span><span class="cov8" title="1">{
+                row := records[i]
+
+                // Ensure row has enough columns
+                maxIdx := 0
+                for _, idx := range headerMap </span><span class="cov8" title="1">{
+                        if idx &gt; maxIdx </span><span class="cov8" title="1">{
+                                maxIdx = idx
+                        }</span>
+                }
+                <span class="cov8" title="1">if len(row) &lt;= maxIdx </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+
+                <span class="cov8" title="1">record := ImportRecord{
+                        CustomerID:    getField(row, headerMap, "customer_id"),
+                        CustomerEmail: getField(row, headerMap, "customer_email"),
+                        CustomerName:  getField(row, headerMap, "customer_name"),
+                        Subject:       getField(row, headerMap, "subject"),
+                        Description:   getField(row, headerMap, "description"),
+                        Category:      getField(row, headerMap, "category"),
+                        Priority:      getField(row, headerMap, "priority"),
+                        Metadata: ImportMetadata{
+                                Source:     getField(row, headerMap, "source"),
+                                Browser:    getField(row, headerMap, "browser"),
+                                DeviceType: getField(row, headerMap, "device_type"),
+                        },
+                }
+
+                results = append(results, record)</span>
+        }
+
+        <span class="cov8" title="1">return results, nil</span>
+}
+
+func getField(row []string, headerMap map[string]int, fieldName string) string <span class="cov8" title="1">{
+        if idx, ok := headerMap[fieldName]; ok &amp;&amp; idx &lt; len(row) </span><span class="cov8" title="1">{
+                return row[idx]
+        }</span>
+        <span class="cov8" title="1">return ""</span>
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package importer
+
+type ImportMetadata struct {
+        Source     string
+        Browser    string
+        DeviceType string
+}
+
+type ImportRecord struct {
+        CustomerID    string
+        CustomerEmail string
+        CustomerName  string
+        Subject       string
+        Description   string
+        Category      string
+        Priority      string
+        Metadata      ImportMetadata
+}
+
+type TicketImporter interface {
+        Parse(data []byte) ([]ImportRecord, error)
+}
+
+func NewCSVImporter() TicketImporter <span class="cov8" title="1">{
+        return &amp;csvImporter{}
+}</span>
+
+func NewJSONImporter() TicketImporter <span class="cov8" title="1">{
+        return &amp;jsonImporter{}
+}</span>
+
+func NewXMLImporter() TicketImporter <span class="cov8" title="1">{
+        return &amp;xmlImporter{}
+}</span>
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package importer
+
+import (
+        "encoding/json"
+        "fmt"
+)
+
+type jsonImporter struct{}
+
+type jsonRecord struct {
+        CustomerID    string `json:"customer_id"`
+        CustomerEmail string `json:"customer_email"`
+        CustomerName  string `json:"customer_name"`
+        Subject       string `json:"subject"`
+        Description   string `json:"description"`
+        Category      string `json:"category"`
+        Priority      string `json:"priority"`
+        Metadata      struct {
+                Source     string `json:"source"`
+                Browser    string `json:"browser"`
+                DeviceType string `json:"device_type"`
+        } `json:"metadata"`
+}
+
+func (j *jsonImporter) Parse(data []byte) ([]ImportRecord, error) <span class="cov8" title="1">{
+        var jsonRecords []jsonRecord
+        if err := json.Unmarshal(data, &amp;jsonRecords); err != nil </span><span class="cov8" title="1">{
+                return nil, fmt.Errorf("failed to parse JSON: %w", err)
+        }</span>
+
+        <span class="cov8" title="1">var results []ImportRecord
+        for _, jrec := range jsonRecords </span><span class="cov8" title="1">{
+                record := ImportRecord{
+                        CustomerID:    jrec.CustomerID,
+                        CustomerEmail: jrec.CustomerEmail,
+                        CustomerName:  jrec.CustomerName,
+                        Subject:       jrec.Subject,
+                        Description:   jrec.Description,
+                        Category:      jrec.Category,
+                        Priority:      jrec.Priority,
+                        Metadata: ImportMetadata{
+                                Source:     jrec.Metadata.Source,
+                                Browser:    jrec.Metadata.Browser,
+                                DeviceType: jrec.Metadata.DeviceType,
+                        },
+                }
+                results = append(results, record)
+        }</span>
+
+        <span class="cov8" title="1">return results, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package importer
+
+import (
+        "encoding/xml"
+        "fmt"
+)
+
+type xmlImporter struct{}
+
+type xmlTickets struct {
+        Tickets []xmlRecord `xml:"ticket"`
+}
+
+type xmlRecord struct {
+        CustomerID    string `xml:"customer_id"`
+        CustomerEmail string `xml:"customer_email"`
+        CustomerName  string `xml:"customer_name"`
+        Subject       string `xml:"subject"`
+        Description   string `xml:"description"`
+        Category      string `xml:"category"`
+        Priority      string `xml:"priority"`
+        Metadata      struct {
+                Source     string `xml:"source"`
+                Browser    string `xml:"browser"`
+                DeviceType string `xml:"device_type"`
+        } `xml:"metadata"`
+}
+
+func (x *xmlImporter) Parse(data []byte) ([]ImportRecord, error) <span class="cov8" title="1">{
+        var xmlData xmlTickets
+        if err := xml.Unmarshal(data, &amp;xmlData); err != nil </span><span class="cov8" title="1">{
+                return nil, fmt.Errorf("failed to parse XML: %w", err)
+        }</span>
+
+        <span class="cov8" title="1">var results []ImportRecord
+        for _, xrec := range xmlData.Tickets </span><span class="cov8" title="1">{
+                record := ImportRecord{
+                        CustomerID:    xrec.CustomerID,
+                        CustomerEmail: xrec.CustomerEmail,
+                        CustomerName:  xrec.CustomerName,
+                        Subject:       xrec.Subject,
+                        Description:   xrec.Description,
+                        Category:      xrec.Category,
+                        Priority:      xrec.Priority,
+                        Metadata: ImportMetadata{
+                                Source:     xrec.Metadata.Source,
+                                Browser:    xrec.Metadata.Browser,
+                                DeviceType: xrec.Metadata.DeviceType,
+                        },
+                }
+                results = append(results, record)
+        }</span>
+
+        <span class="cov8" title="1">return results, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package middleware
+
+import (
+        "github.com/gofiber/fiber/v2"
+        "github.com/google/uuid"
+)
+
+func RequestID(c *fiber.Ctx) error <span class="cov8" title="1">{
+        id := c.Get("X-Request-ID")
+        if id == "" </span><span class="cov8" title="1">{
+                id = uuid.New().String()
+        }</span>
+        <span class="cov8" title="1">c.Set("X-Request-ID", id)
+        c.Locals("request_id", id)
+        return c.Next()</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

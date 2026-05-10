@@ -1,0 +1,6 @@
+customer_id,customer_email,customer_name,subject,description,category,priority,source,browser,device_type
+CUST_BAD1,not-an-email,John Doe,Valid Subject,This is a valid description that has enough characters,account_access,high,web_form,Chrome,desktop
+CUST_BAD2,jane@example.com,Jane Smith,,Missing subject description,account_access,invalid_priority,web_form,Chrome,desktop
+CUST_BAD3,invalid.email.format,Bob Johnson,Subject,Too,billing_question,low,web_form,Chrome,desktop
+CUST_BAD4,test@example.com,Alice Williams,Valid,Short desc,technical_issue,high,invalid_source,Chrome,desktop
+CUST_BAD5,,Charlie Brown,Test Subject,This is a description with enough characters to pass validation,account_access,medium,web_form,Chrome,desktop

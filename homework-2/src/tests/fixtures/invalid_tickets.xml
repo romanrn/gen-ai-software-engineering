@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tickets>
+  <ticket>
+    <customer_id>BAD_X1</customer_id>
+    <customer_email>bad-email-format</customer_email>
+    <customer_name>Invalid User</customer_name>
+    <subject>Bad</subject>
+    <description>Too short description</description>
+    <category>invalid_category</category>
+    <priority>invalid_priority</priority>
+    <metadata>
+      <source>web_form</source>
+      <browser>Chrome</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id></customer_id>
+    <customer_email>test@example.com</customer_email>
+    <customer_name></customer_name>
+    <subject>Empty customer name and id</subject>
+    <description>This is a description that has enough characters for validation</description>
+    <category>technical_issue</category>
+    <priority>high</priority>
+    <metadata>
+      <source>invalid_source</source>
+      <browser>Chrome</browser>
+      <device_type>invalid_device</device_type>
+    </metadata>
+  </ticket>
+</tickets>
