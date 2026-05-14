@@ -1,0 +1,43 @@
+[
+  {
+    "customer_id": "CUST_BAD_J1",
+    "customer_email": "not-valid-email",
+    "customer_name": "Test User",
+    "subject": "Test",
+    "description": "Short",
+    "category": "account_access",
+    "priority": "high",
+    "metadata": {
+      "source": "web_form",
+      "browser": "Chrome",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_id": "CUST_BAD_J2",
+    "customer_email": "missing@domain.com",
+    "customer_name": "",
+    "subject": "Valid Subject",
+    "description": "This description is way too short",
+    "category": "invalid_category",
+    "priority": "high",
+    "metadata": {
+      "source": "web_form",
+      "browser": "Chrome",
+      "device_type": "desktop"
+    }
+  },
+  {
+    "customer_email": "test@example.com",
+    "customer_name": "John Doe",
+    "subject": "Missing customer_id field",
+    "description": "This is a valid description with enough length to pass validation rules",
+    "category": "technical_issue",
+    "priority": "high",
+    "metadata": {
+      "source": "web_form",
+      "browser": "Chrome",
+      "device_type": "desktop"
+    }
+  }
+]

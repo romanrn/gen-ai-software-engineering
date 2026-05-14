@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tickets>
+  <ticket>
+    <customer_id>CUST_X001</customer_id>
+    <customer_email>andrew.clark@example.com</customer_email>
+    <customer_name>Andrew Clark</customer_name>
+    <subject>Cannot login to account</subject>
+    <description>I can't sign in. Getting access denied error. My password should be correct.</description>
+    <category>account_access</category>
+    <priority>urgent</priority>
+    <metadata>
+      <source>web_form</source>
+      <browser>Chrome</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X002</customer_id>
+    <customer_email>elizabeth.wright@example.com</customer_email>
+    <customer_name>Elizabeth Wright</customer_name>
+    <subject>Application crashes on startup</subject>
+    <description>The app crashes immediately when I try to run it. Getting 500 error in logs.</description>
+    <category>technical_issue</category>
+    <priority>high</priority>
+    <metadata>
+      <source>email</source>
+      <browser>Firefox</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X003</customer_id>
+    <customer_email>george.lopez@example.com</customer_email>
+    <customer_name>George Lopez</customer_name>
+    <subject>Double billing charge</subject>
+    <description>I was charged twice this month. Need refund for duplicate charge.</description>
+    <category>billing_question</category>
+    <priority>high</priority>
+    <metadata>
+      <source>api</source>
+      <browser>Safari</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X004</customer_id>
+    <customer_email>hannah.king@example.com</customer_email>
+    <customer_name>Hannah King</customer_name>
+    <subject>Add mobile app</subject>
+    <description>Would love to have a native mobile application. This would be a great feature.</description>
+    <category>feature_request</category>
+    <priority>low</priority>
+    <metadata>
+      <source>chat</source>
+      <browser>Chrome</browser>
+      <device_type>mobile</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X005</customer_id>
+    <customer_email>ian.edwards@example.com</customer_email>
+    <customer_name>Ian Edwards</customer_name>
+    <subject>Form validation bug</subject>
+    <description>The form validation is broken. Expected to show error messages but page is blank.</description>
+    <category>bug_report</category>
+    <priority>high</priority>
+    <metadata>
+      <source>web_form</source>
+      <browser>Edge</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X006</customer_id>
+    <customer_email>julia.patel@example.com</customer_email>
+    <customer_name>Julia Patel</customer_name>
+    <subject>2FA locked out</subject>
+    <description>My two-factor authentication is locked. Cannot access account. Urgent!</description>
+    <category>account_access</category>
+    <priority>urgent</priority>
+    <metadata>
+      <source>phone</source>
+      <browser>Chrome</browser>
+      <device_type>mobile</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X007</customer_id>
+    <customer_email>kevin.bennett@example.com</customer_email>
+    <customer_name>Kevin Bennett</customer_name>
+    <subject>Checkout fails</subject>
+    <description>Cannot complete purchase. Payment processing keeps failing. Critical blocker.</description>
+    <category>technical_issue</category>
+    <priority>urgent</priority>
+    <metadata>
+      <source>web_form</source>
+      <browser>Firefox</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X008</customer_id>
+    <customer_email>laura.frank@example.com</customer_email>
+    <customer_name>Laura Frank</customer_name>
+    <subject>Request theme customization</subject>
+    <description>Would like the ability to choose different color themes. Nice enhancement.</description>
+    <category>feature_request</category>
+    <priority>low</priority>
+    <metadata>
+      <source>email</source>
+      <browser>Safari</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X009</customer_id>
+    <customer_email>michael.gray@example.com</customer_email>
+    <customer_name>Michael Gray</customer_name>
+    <subject>Security breach alert</subject>
+    <description>Found a critical security vulnerability. Production down. Immediate action needed.</description>
+    <category>technical_issue</category>
+    <priority>urgent</priority>
+    <metadata>
+      <source>api</source>
+      <browser>Chrome</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X010</customer_id>
+    <customer_email>nancy.brown@example.com</customer_email>
+    <customer_name>Nancy Brown</customer_name>
+    <subject>Invoice not received</subject>
+    <description>I didn't get my monthly invoice. Please resend it.</description>
+    <category>billing_question</category>
+    <priority>medium</priority>
+    <metadata>
+      <source>chat</source>
+      <browser>Edge</browser>
+      <device_type>mobile</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X011</customer_id>
+    <customer_email>oliver.hunt@example.com</customer_email>
+    <customer_name>Oliver Hunt</customer_name>
+    <subject>Account locked immediately</subject>
+    <description>My account is locked and I can't access it. Need urgent assistance.</description>
+    <category>account_access</category>
+    <priority>urgent</priority>
+    <metadata>
+      <source>web_form</source>
+      <browser>Firefox</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X012</customer_id>
+    <customer_email>priya.kumar@example.com</customer_email>
+    <customer_name>Priya Kumar</customer_name>
+    <subject>Very slow responses</subject>
+    <description>The application is running very slow. Each request takes 40 seconds.</description>
+    <category>technical_issue</category>
+    <priority>high</priority>
+    <metadata>
+      <source>email</source>
+      <browser>Chrome</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X013</customer_id>
+    <customer_email>quinn.stewart@example.com</customer_email>
+    <customer_name>Quinn Stewart</customer_name>
+    <subject>Documentation update needed</subject>
+    <description>The API documentation is outdated. Would like more current examples.</description>
+    <category>feature_request</category>
+    <priority>low</priority>
+    <metadata>
+      <source>api</source>
+      <browser>Safari</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X014</customer_id>
+    <customer_email>rachel.james@example.com</customer_email>
+    <customer_name>Rachel James</customer_name>
+    <subject>Minor formatting issue</subject>
+    <description>Text alignment is wrong on the profile page. Cosmetic issue.</description>
+    <category>bug_report</category>
+    <priority>low</priority>
+    <metadata>
+      <source>chat</source>
+      <browser>Firefox</browser>
+      <device_type>mobile</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X015</customer_id>
+    <customer_email>steve.baker@example.com</customer_email>
+    <customer_name>Steve Baker</customer_name>
+    <subject>Entire system unavailable</subject>
+    <description>The complete service is down. All endpoints fail. Critical production issue.</description>
+    <category>technical_issue</category>
+    <priority>urgent</priority>
+    <metadata>
+      <source>phone</source>
+      <browser>Chrome</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X016</customer_id>
+    <customer_email>tanya.rivera@example.com</customer_email>
+    <customer_name>Tanya Rivera</customer_name>
+    <subject>Password reset broken</subject>
+    <description>Can't reset my password. The reset link is not working. Urgent access issue.</description>
+    <category>account_access</category>
+    <priority>urgent</priority>
+    <metadata>
+      <source>web_form</source>
+      <browser>Edge</browser>
+      <device_type>mobile</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X017</customer_id>
+    <customer_email>utah.powell@example.com</customer_email>
+    <customer_name>Utah Powell</customer_name>
+    <subject>Bulk operations requested</subject>
+    <description>Would like bulk delete and edit operations. When possible, add this feature.</description>
+    <category>feature_request</category>
+    <priority>medium</priority>
+    <metadata>
+      <source>email</source>
+      <browser>Chrome</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X018</customer_id>
+    <customer_email>vera.shaw@example.com</customer_email>
+    <customer_name>Vera Shaw</customer_name>
+    <subject>Search feature broken</subject>
+    <description>The search returns no results. Expected to find matching items but got nothing.</description>
+    <category>bug_report</category>
+    <priority>high</priority>
+    <metadata>
+      <source>chat</source>
+      <browser>Firefox</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X019</customer_id>
+    <customer_email>walt.long@example.com</customer_email>
+    <customer_name>Walt Long</customer_name>
+    <subject>Data breach detected</subject>
+    <description>Security team found a critical breach. Can't access due to security. Urgent!</description>
+    <category>account_access</category>
+    <priority>urgent</priority>
+    <metadata>
+      <source>api</source>
+      <browser>Safari</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X020</customer_id>
+    <customer_email>ximena.foster@example.com</customer_email>
+    <customer_name>Ximena Foster</customer_name>
+    <subject>High API latency</subject>
+    <description>API responses are taking too long. Performance is severely degraded.</description>
+    <category>technical_issue</category>
+    <priority>high</priority>
+    <metadata>
+      <source>web_form</source>
+      <browser>Chrome</browser>
+      <device_type>mobile</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X021</customer_id>
+    <customer_email>yolanda.dunn@example.com</customer_email>
+    <customer_name>Yolanda Dunn</customer_name>
+    <subject>Subscription renewal issue</subject>
+    <description>My subscription didn't renew properly. Billing issue asap.</description>
+    <category>billing_question</category>
+    <priority>high</priority>
+    <metadata>
+      <source>email</source>
+      <browser>Firefox</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X022</customer_id>
+    <customer_email>zachary.mccoy@example.com</customer_email>
+    <customer_name>Zachary McCoy</customer_name>
+    <subject>Export to CSV broken</subject>
+    <description>Cannot export data to CSV format. The feature is not working.</description>
+    <category>bug_report</category>
+    <priority>high</priority>
+    <metadata>
+      <source>api</source>
+      <browser>Edge</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X023</customer_id>
+    <customer_email>amber.tucker@example.com</customer_email>
+    <customer_name>Amber Tucker</customer_name>
+    <subject>Add notification center</subject>
+    <description>Would like a unified notification center to manage all alerts.</description>
+    <category>feature_request</category>
+    <priority>low</priority>
+    <metadata>
+      <source>web_form</source>
+      <browser>Chrome</browser>
+      <device_type>mobile</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X024</customer_id>
+    <customer_email>blake.harper@example.com</customer_email>
+    <customer_name>Blake Harper</customer_name>
+    <subject>User authentication fails</subject>
+    <description>Authentication system is completely broken. Nobody can login.</description>
+    <category>technical_issue</category>
+    <priority>urgent</priority>
+    <metadata>
+      <source>phone</source>
+      <browser>Safari</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X025</customer_id>
+    <customer_email>cameron.snyder@example.com</customer_email>
+    <customer_name>Cameron Snyder</customer_name>
+    <subject>Refund not processed</subject>
+    <description>Requested refund weeks ago but haven't received it yet.</description>
+    <category>billing_question</category>
+    <priority>high</priority>
+    <metadata>
+      <source>email</source>
+      <browser>Firefox</browser>
+      <device_type>mobile</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X026</customer_id>
+    <customer_email>diana.ross@example.com</customer_email>
+    <customer_name>Diana Ross</customer_name>
+    <subject>Dashboard widgets broken</subject>
+    <description>The dashboard widgets are not displaying correctly. Several are blank.</description>
+    <category>bug_report</category>
+    <priority>high</priority>
+    <metadata>
+      <source>chat</source>
+      <browser>Chrome</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X027</customer_id>
+    <customer_email>ethan.cole@example.com</customer_email>
+    <customer_name>Ethan Cole</customer_name>
+    <subject>Add role-based access control</subject>
+    <description>Would like RBAC support for better permission management.</description>
+    <category>feature_request</category>
+    <priority>medium</priority>
+    <metadata>
+      <source>api</source>
+      <browser>Safari</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X028</customer_id>
+    <customer_email>fiona.grant@example.com</customer_email>
+    <customer_name>Fiona Grant</customer_name>
+    <subject>Locked out of account</subject>
+    <description>My account is completely locked. Cannot login anywhere.</description>
+    <category>account_access</category>
+    <priority>urgent</priority>
+    <metadata>
+      <source>web_form</source>
+      <browser>Firefox</browser>
+      <device_type>mobile</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X029</customer_id>
+    <customer_email>gavin.cross@example.com</customer_email>
+    <customer_name>Gavin Cross</customer_name>
+    <subject>Page load timeout</subject>
+    <description>Pages take forever to load. Getting timeout errors.</description>
+    <category>technical_issue</category>
+    <priority>high</priority>
+    <metadata>
+      <source>email</source>
+      <browser>Edge</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+  <ticket>
+    <customer_id>CUST_X030</customer_id>
+    <customer_email>hilary.mason@example.com</customer_email>
+    <customer_name>Hilary Mason</customer_name>
+    <subject>Invoice calculation error</subject>
+    <description>Invoices have calculation errors. The amounts are wrong.</description>
+    <category>billing_question</category>
+    <priority>high</priority>
+    <metadata>
+      <source>chat</source>
+      <browser>Chrome</browser>
+      <device_type>desktop</device_type>
+    </metadata>
+  </ticket>
+</tickets>

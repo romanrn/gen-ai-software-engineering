@@ -1,0 +1,51 @@
+customer_id,customer_email,customer_name,subject,description,category,priority,source,browser,device_type
+CUST001,john.doe@example.com,John Doe,Cannot login to account,I cannot access my account. Getting password mismatch error. Please help immediately.,account_access,urgent,web_form,Chrome,desktop
+CUST002,jane.smith@example.com,Jane Smith,Application crashes on startup,The app crashes every time I try to open it. Getting a 500 error in logs.,technical_issue,high,email,Firefox,laptop
+CUST003,bob.johnson@example.com,Bob Johnson,Billing discrepancy,I was charged twice for my subscription this month. Please refund the duplicate charge.,billing_question,high,api,Safari,desktop
+CUST004,alice.williams@example.com,Alice Williams,Feature request for dark mode,Would like to see a dark mode option in the application.,feature_request,low,chat,Chrome,mobile
+CUST005,charlie.brown@example.com,Charlie Brown,Bug in user profile page,The profile page doesn't load correctly. Expected to see user data but shows blank page.,bug_report,medium,web_form,Edge,desktop
+CUST006,emma.davis@example.com,Emma Davis,2FA not working,My 2-factor authentication is locked out. Cannot sign in to account.,account_access,urgent,phone,Chrome,mobile
+CUST007,frank.miller@example.com,Frank Miller,Payment processing issue,Payment failed during checkout. Card was charged but order not placed.,billing_question,high,web_form,Firefox,desktop
+CUST008,grace.wilson@example.com,Grace Wilson,UI improvement suggestion,The buttons are too small. Would like larger touch targets for mobile users.,feature_request,low,email,Safari,tablet
+CUST009,henry.moore@example.com,Henry Moore,Database connection error,Getting database error when trying to view reports. Critical issue in production down.,technical_issue,urgent,api,Chrome,desktop
+CUST010,iris.taylor@example.com,Iris Taylor,Wrong invoice sent,Received an invoice for a different customer. Please send the correct invoice.,billing_question,high,email,Firefox,desktop
+CUST011,jack.anderson@example.com,Jack Anderson,Login page broken,The login form is not responding to input. Website not working.,account_access,urgent,web_form,Edge,desktop
+CUST012,kelly.thomas@example.com,Kelly Thomas,Slow performance issue,The app is very slow. Takes 30 seconds to load pages. Unacceptable.,technical_issue,high,chat,Chrome,mobile
+CUST013,liam.jackson@example.com,Liam Jackson,Request for API documentation,Would like more detailed API documentation with examples.,feature_request,low,api,Safari,desktop
+CUST014,mia.white@example.com,Mia White,Minor UI bug,Typo in the help section. The word is misspelled cosmetically.,bug_report,low,email,Firefox,desktop
+CUST015,noah.harris@example.com,Noah Harris,Security vulnerability found,Found a critical security breach. Production down.,technical_issue,urgent,api,Chrome,desktop
+CUST016,olivia.martin@example.com,Olivia Martin,Account access locked,My account is locked. Cannot login after 3 failed attempts.,account_access,high,phone,Safari,mobile
+CUST017,peter.thompson@example.com,Peter Thompson,Renewal not applied,My subscription renewal wasn't processed. Billing issue needs immediate action.,billing_question,high,web_form,Edge,desktop
+CUST018,quinn.garcia@example.com,Quinn Garcia,New language support request,Would like the app to support Spanish language.,feature_request,low,email,Chrome,desktop
+CUST019,rachel.martinez@example.com,Rachel Martinez,Export functionality broken,Cannot export data to CSV. Feature is broken.,bug_report,high,chat,Firefox,desktop
+CUST020,sam.robinson@example.com,Sam Robinson,Authentication system crashes,The whole authentication system is broken. Nobody can login.,technical_issue,urgent,api,Chrome,desktop
+CUST021,tina.clark@example.com,Tina Clark,Missing refund,Applied for refund 2 weeks ago but never received.,billing_question,high,email,Safari,mobile
+CUST022,uma.rodriguez@example.com,Uma Rodriguez,Password reset link broken,Cannot reset my password because the link is broken.,account_access,urgent,web_form,Firefox,desktop
+CUST023,victor.lewis@example.com,Victor Lewis,Performance optimization request,Please optimize the database queries. App is running slowly.,feature_request,medium,api,Edge,desktop
+CUST024,wendy.lee@example.com,Wendy Lee,Mobile app crash,The mobile app crashes on Android devices. Critical regression.,bug_report,urgent,chat,Chrome,mobile
+CUST025,xander.walker@example.com,Xander Walker,Payment gateway error,Getting persistent payment gateway errors during checkout.,technical_issue,urgent,web_form,Safari,desktop
+CUST026,yasmin.hall@example.com,Yasmin Hall,Invoice formatting issue,The invoice has formatting problems. Numbers are cut off.,billing_question,medium,email,Firefox,desktop
+CUST027,zack.allen@example.com,Zack Allen,Unable to reset password,Password reset email not received. Account locked.,account_access,urgent,phone,Chrome,mobile
+CUST028,amy.young@example.com,Amy Young,New dashboard widgets,Would like more customizable widgets on the dashboard.,feature_request,low,email,Safari,desktop
+CUST029,brian.hernandez@example.com,Brian Hernandez,Critical null pointer exception,Application throws exception when processing orders. Production blocking.,technical_issue,urgent,api,Edge,desktop
+CUST030,carla.king@example.com,Carla King,Duplicate charges,Been charged multiple times for the same transaction.,billing_question,high,web_form,Firefox,mobile
+CUST031,daniel.wright@example.com,Daniel Wright,Cannot access my account,Account completely inaccessible. Login fails immediately.,account_access,urgent,chat,Chrome,desktop
+CUST032,eva.lopez@example.com,Eva Lopez,Bad performance under load,The system is crashing when multiple users are active.,technical_issue,urgent,api,Safari,desktop
+CUST033,felix.hill@example.com,Felix Hill,Subscription cancellation request,Want to cancel my subscription and request refund.,billing_question,high,email,Firefox,desktop
+CUST034,gloria.scott@example.com,Gloria Scott,Suggest privacy controls,Would like more fine-grained privacy settings.,feature_request,low,web_form,Chrome,mobile
+CUST035,henry.green@example.com,Henry Green,Data export broken,Cannot export my personal data. Technical defect.,bug_report,high,api,Edge,desktop
+CUST036,iris.adams@example.com,Iris Adams,2FA stuck in loop,Two-factor auth keeps asking for code even after entering correct code.,account_access,urgent,email,Firefox,mobile
+CUST037,jack.nelson@example.com,Jack Nelson,Outage notice,The entire service is down. Production outage.,technical_issue,urgent,phone,Chrome,desktop
+CUST038,kate.carter@example.com,Kate Carter,Refund status unknown,Submitted refund request but don't know the status.,billing_question,medium,chat,Safari,desktop
+CUST039,leo.mitchell@example.com,Leo Mitchell,Nice to have: batch operations,When possible add bulk operations for data management.,feature_request,low,email,Firefox,desktop
+CUST040,molly.perez@example.com,Molly Perez,Import feature not working,Cannot import data file. Feature is broken.,bug_report,high,web_form,Edge,mobile
+CUST041,nathan.roberts@example.com,Nathan Roberts,Login system compromised,Possible security breach. Can't access account.,account_access,urgent,api,Chrome,desktop
+CUST042,olivia.phillips@example.com,Olivia Phillips,Slow report generation,Reports take too long to generate. Performance issue.,technical_issue,high,email,Safari,desktop
+CUST043,paul.campbell@example.com,Paul Campbell,Invoice number mismatch,Invoices don't match order numbers.,billing_question,medium,chat,Firefox,mobile
+CUST044,quinn.parker@example.com,Quinn Parker,Add two-factor authentication,Would like the ability to enable two-factor authentication.,feature_request,medium,web_form,Chrome,desktop
+CUST045,rachel.evans@example.com,Rachel Evans,Reports won't generate,Getting error when trying to run reports. Expected detailed report.,bug_report,high,api,Edge,desktop
+CUST046,steve.edwards@example.com,Steve Edwards,Account locked due to security,Account locked for security. Can't access.,account_access,urgent,phone,Safari,mobile
+CUST047,tara.collins@example.com,Tara Collins,Critical system error,System is crashing repeatedly. Production is completely down.,technical_issue,urgent,email,Firefox,desktop
+CUST048,uniform.stewart@example.com,Uniform Stewart,Pricing inquiry,Questions about subscription pricing and renewal.,billing_question,medium,chat,Chrome,desktop
+CUST049,victor.sanchez@example.com,Victor Sanchez,Minor cosmetic issue,Button alignment is off. Nice to have fix when possible.,bug_report,low,web_form,Safari,desktop
+CUST050,wendy.morris@example.com,Wendy Morris,API rate limiting,Would like higher API rate limits for our application.,feature_request,medium,api,Firefox,mobile
