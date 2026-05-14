@@ -1,4 +1,11 @@
-# Intelligent Customer Support System
+# 🏦 Homework 2: Intelligent Customer Support System
+
+> **Student Name**: Roman Reznik
+> **Date Submitted**: 10-05-2026
+> **AI Tools Used**: [Claude Code, GitHub Copilot]
+
+---
+## 📋 Project Overview
 
 A production-grade support ticket management system built in Go. Accepts tickets from multiple file formats, auto-classifies them by keyword analysis, and exposes a full REST API with Swagger documentation.
 
@@ -7,9 +14,9 @@ A production-grade support ticket management system built in Go. Accepts tickets
 | Document | Audience | Content |
 |----------|----------|---------|
 | **README.md** *(this file)* | Developers | Overview, quick start, project structure |
-| [API_REFERENCE.md](API_REFERENCE.md) | API consumers | Endpoints, schemas, error codes, cURL examples |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | Technical leads | Component design, data flow, design decisions |
-| [TESTING_GUIDE.md](TESTING_GUIDE.md) | QA engineers | Test inventory, coverage, manual checklist, benchmarks |
+| [docs/API_REFERENCE.md](docs/API_REFERENCE.md) | API consumers | Endpoints, schemas, error codes, cURL examples |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Technical leads | Component design, data flow, design decisions |
+| [docs/TESTING_GUIDE.md](docs/TESTING_GUIDE.md) | QA engineers | Test inventory, coverage, manual checklist, benchmarks |
 
 ---
 
@@ -60,7 +67,7 @@ graph TD
     SVC --> REPO
 ```
 
-Full component descriptions, sequence diagrams, and design decisions: [ARCHITECTURE.md](ARCHITECTURE.md)
+Full component descriptions, sequence diagrams, and design decisions: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
 ---
 
@@ -85,10 +92,11 @@ homework-2/
 │   │   └── middleware/            # RequestID, logger
 │   └── tests/                     # Black-box integration + performance tests
 │       └── fixtures/              # Sample data for tests
-├── docs/                          # This documentation
+├── docs/                          # Additional documentation
 ├── sample_data/                   # 50-row CSV, 20-record JSON, 30-record XML
 ├── Dockerfile
-└── docker-compose.yml
+├── docker-compose.yml
+└── README.md                      # This file
 ```
 
 ---
@@ -130,7 +138,7 @@ The server starts on port `8080` by default. Set `PORT=<n>` to override.
 | POST | `/tickets/:id/auto-classify` | Run auto-classification |
 | GET | `/swagger/*` | Interactive Swagger UI |
 
-Full request/response schemas and cURL examples: [API_REFERENCE.md](API_REFERENCE.md)
+Full request/response schemas and cURL examples: [docs/API_REFERENCE.md](docs/API_REFERENCE.md)
 
 ---
 
@@ -147,7 +155,7 @@ go test -coverpkg=./... -coverprofile=coverage.out ./...
 go tool cover -func=coverage.out | grep total   # 89.1%
 ```
 
-Full test inventory, coverage breakdown, benchmarks, and manual checklist: [TESTING_GUIDE.md](TESTING_GUIDE.md)
+Full test inventory, coverage breakdown, benchmarks, and manual checklist: [docs/TESTING_GUIDE.md](docs/TESTING_GUIDE.md)
 
 ---
 

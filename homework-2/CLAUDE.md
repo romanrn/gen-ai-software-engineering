@@ -4,7 +4,7 @@
 
 | Document | Audience | Content |
 |----------|----------|---------|
-| [docs/README.md](docs/README.md) | Developers | Project overview, quick start, project structure |
+| [README.md](README.md) | Developers | Project overview, quick start, project structure |
 | [docs/API_REFERENCE.md](docs/API_REFERENCE.md) | API consumers | All endpoints, request/response schemas, cURL examples |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Technical leads | Component design, data flow diagrams, design decisions |
 | [docs/TESTING_GUIDE.md](docs/TESTING_GUIDE.md) | QA engineers | Test inventory, coverage report, manual checklist, benchmarks |
