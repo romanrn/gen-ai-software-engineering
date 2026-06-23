@@ -2,78 +2,62 @@
 
 ## Context
 
-homework-4 requires building a generic 4-agent pipeline that runs against any bug directory and produces all artifacts inside it. The 3 issues (bug001, bug002, sec001) are demonstration examples. Currently Phase 0 is complete (src/, docker-compose.yml, context/bugs/ seed files).
+homework-4 requires a generic 6-agent pipeline (4 required + 2 additional) that runs against any bug directory and produces all artifacts inside it. The only manual input per issue is `bug-context.md`. The 3 issues (bug001, bug002, sec001) demonstrate the pipeline works for different problem types.
 
 ---
 
-## Pipeline Model
+## Pipeline
 
 ```
 ./run-pipeline.sh <bug-dir>
 
-  Bug Researcher (manual)
-        ↓  reads: <bug-dir>/research/codebase-research.md
-  Research Verifier
-        ↓  writes: <bug-dir>/research/verified-research.md
-  Bug Planner (manual)
-        ↓  reads: <bug-dir>/implementation-plan.md
-  Bug Fixer
-        ↓  writes: <bug-dir>/fix-summary.md
-  Security Verifier
-        ↓  writes: <bug-dir>/security-report.md
-  Unit Test Generator
-        ↓  writes: <bug-dir>/test-report.md
+  bug-researcher        reads: bug-context.md, src/
+                        skill: codebase-research-format
+                        writes: research/codebase-research.md
+
+  research-verifier     reads: research/codebase-research.md, src/
+                        skill: research-quality-measurement
+                        writes: research/verified-research.md
+
+  bug-planner           reads: research/verified-research.md, src/
+                        skill: implementation-plan-format
+                        writes: implementation-plan.md
+
+  bug-fixer             reads: implementation-plan.md
+                        runs:  docker compose run --rm app go test ./...
+                        writes: fix-summary.md
+
+  security-verifier     reads: fix-summary.md, src/
+                        writes: security-report.md
+
+  unit-test-generator   reads: fix-summary.md, src/
+                        skill: unit-tests-FIRST
+                        writes: test-report.md
 ```
 
 ---
 
 ## Phase 0 — Go Application ✅
 
-All files created and verified (`go build`, `go test` pass).
-
-> All Phase 0 files are **manually authored seed files** — the starting state the pipeline operates on, not agent outputs. `context/bugs/` files document the observable wrong behavior so agents have input context to work from.
-
-- `src/main.go` — 3 seeded issues (bug#1, bug#2, sec#1)
-- `src/go.mod`, `src/Dockerfile`
+- `src/main.go` — 3 seeded issues (bug#1: wrong timezone, bug#2: int8 overflow, sec#1: hardcoded key)
+- `src/go.mod`, `src/Dockerfile`, `src/main_test.go`
 - `docker-compose.yml` — no local Go needed
-- `src/main_test.go` — stub tests
 - `context/bugs/bug001/bug-context.md` — observable symptom only
 - `context/bugs/bug002/bug-context.md` — observable symptom only
 - `context/bugs/sec001/bug-context.md` — observable symptom only
 
 ---
 
-## Phase 1 — Skills
+## Phase 1 — Skills ✅
 
-**`skills/research-quality-measurement.md`**
-- GOLD: all file:line refs verified, snippets match source, no discrepancies
-- SILVER: ≥90% refs verified, minor discrepancies documented
-- BRONZE: ≥70% refs verified, some snippets differ
-- FAIL: <70% verified or critical discrepancies
-
-**`skills/unit-tests-FIRST.md`**
-- Fast: each test < 100ms
-- Independent: no shared state between tests
-- Repeatable: deterministic, no external deps
-- Self-validating: explicit pass/fail assertions
-- Timely: tests added in same PR as code change
+- `skills/codebase-research-format.md` — structure for research output (bug-researcher)
+- `skills/research-quality-measurement.md` — GOLD/SILVER/BRONZE/FAIL levels (research-verifier)
+- `skills/implementation-plan-format.md` — structure for implementation plan (bug-planner)
+- `skills/unit-tests-FIRST.md` — FIRST checklist (unit-test-generator)
 
 ---
 
-## Phase 2 — Research Artifacts (manual, pre-pipeline)
-
-Per each issue — written by developer, read by agents as input:
-
-- `context/bugs/bug001/research/codebase-research.md` + `implementation-plan.md`
-- `context/bugs/bug002/research/codebase-research.md` + `implementation-plan.md`
-- `context/bugs/sec001/research/codebase-research.md` + `implementation-plan.md`
-
-`codebase-research.md` — exact file:line references, code snippets, root cause analysis.
-`implementation-plan.md` — before/after code per file, test command.
-
----
-
-## Phase 3 — Agent Files
+## Phase 2 — Agents
 
 Agent frontmatter format:
 ```yaml
@@ -88,32 +72,18 @@ tools:
 ---
 ```
 
-**`agents/research-verifier.agent.md`** — model: `claude-opus-4-8`
-- Input: `$BUG_DIR/research/codebase-research.md`, source files
-- Uses skill: `skills/research-quality-measurement.md`
-- Output: `$BUG_DIR/research/verified-research.md`
-
-**`agents/bug-fixer.agent.md`** — model: `claude-haiku-4-5-20251001`
-- Input: `$BUG_DIR/implementation-plan.md`, `$BUG_DIR/research/verified-research.md`
-- Applies fixes to `src/main.go`
-- Runs: `docker compose run --rm app go test ./...`
-- Output: `$BUG_DIR/fix-summary.md`
-
-**`agents/security-verifier.agent.md`** — model: `claude-opus-4-8`
-- Input: `$BUG_DIR/fix-summary.md`, `src/main.go`
-- Rates findings: CRITICAL/HIGH/MEDIUM/LOW/INFO
-- Output: `$BUG_DIR/security-report.md` (no code edits)
-
-**`agents/unit-test-generator.agent.md`** — model: `claude-sonnet-4-6`
-- Input: `$BUG_DIR/fix-summary.md`, `src/main.go`
-- Uses skill: `skills/unit-tests-FIRST.md`
-- Generates/updates tests in `src/main_test.go`
-- Runs: `docker compose run --rm app go test ./...`
-- Output: `$BUG_DIR/test-report.md`
+| Agent | File | Model | Status |
+|-------|------|-------|--------|
+| bug-researcher | `agents/bug-researcher.agent.md` | claude-opus-4-8 | done |
+| research-verifier | `agents/research-verifier.agent.md` | claude-opus-4-8 | — |
+| bug-planner | `agents/bug-planner.agent.md` | claude-sonnet-4-6 | done |
+| bug-fixer | `agents/bug-fixer.agent.md` | claude-haiku-4-5-20251001 | — |
+| security-verifier | `agents/security-verifier.agent.md` | claude-opus-4-8 | — |
+| unit-test-generator | `agents/unit-test-generator.agent.md` | claude-sonnet-4-6 | — |
 
 ---
 
-## Phase 4 — Pipeline Runner
+## Phase 3 — Pipeline Runner
 
 **`run-pipeline.sh`**
 ```bash
@@ -121,7 +91,9 @@ tools:
 set -e
 BUG_DIR=${1:?Usage: ./run-pipeline.sh <bug-dir>}
 
+claude --agent agents/bug-researcher.agent.md --context "$BUG_DIR"
 claude --agent agents/research-verifier.agent.md --context "$BUG_DIR"
+claude --agent agents/bug-planner.agent.md --context "$BUG_DIR"
 claude --agent agents/bug-fixer.agent.md --context "$BUG_DIR"
 claude --agent agents/security-verifier.agent.md --context "$BUG_DIR"
 claude --agent agents/unit-test-generator.agent.md --context "$BUG_DIR"
@@ -136,31 +108,28 @@ Usage:
 
 ---
 
-## Phase 5 — Documentation
+## Phase 4 — Documentation
 
-**`README.md`** — author (Roman Reznik), overview, pipeline usage, app run command
-**`HOWTORUN.md`** — prerequisites (Docker only), run app, run pipeline per issue
+- `README.md` — author (Roman Reznik), overview, pipeline usage, app run command
+- `HOWTORUN.md` — prerequisites (Docker only), run app, run pipeline per issue
 
 ---
 
 ## Execution Order
 
 ```
-1.1  skills/research-quality-measurement.md
-1.2  skills/unit-tests-FIRST.md
-2.1  context/bugs/bug001/research/codebase-research.md
-2.2  context/bugs/bug001/implementation-plan.md
-2.3  context/bugs/bug002/research/codebase-research.md
-2.4  context/bugs/bug002/implementation-plan.md
-2.5  context/bugs/sec001/research/codebase-research.md
-2.6  context/bugs/sec001/implementation-plan.md
-3.1  agents/research-verifier.agent.md
-3.2  agents/bug-fixer.agent.md
-3.3  agents/security-verifier.agent.md
-3.4  agents/unit-test-generator.agent.md
-4.1  run-pipeline.sh
-5.1  README.md
-5.2  HOWTORUN.md
+Phase 2:
+  2.1  agents/research-verifier.agent.md
+  2.2  agents/bug-fixer.agent.md
+  2.3  agents/security-verifier.agent.md
+  2.4  agents/unit-test-generator.agent.md
+
+Phase 3:
+  3.1  run-pipeline.sh
+
+Phase 4:
+  4.1  README.md
+  4.2  HOWTORUN.md
 ```
 
 ---
@@ -168,9 +137,9 @@ Usage:
 ## Verification
 
 1. `docker compose up --build` — server starts on :8080
-2. `curl http://localhost:8080/time` — returns wrong timezone (demonstrates bug#1)
-3. `./run-pipeline.sh context/bugs/bug001` — runs end-to-end, all artifacts created
+2. `curl http://localhost:8080/time` — returns wrong timezone (bug#1 visible)
+3. `./run-pipeline.sh context/bugs/bug001` — all 6 agents run, all artifacts created
 4. `./run-pipeline.sh context/bugs/bug002` — same
 5. `./run-pipeline.sh context/bugs/sec001` — same
-6. `curl http://localhost:8080/time` — returns correct UTC after fixes applied
-7. All 6 expected artifact files exist in each of the 3 bug dirs
+6. `curl http://localhost:8080/time` — returns correct UTC after fixes
+7. `docker compose run --rm app go test ./...` — all tests green

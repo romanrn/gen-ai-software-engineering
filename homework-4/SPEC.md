@@ -21,22 +21,23 @@ A minimal Go HTTP service with seeded bugs and a security vulnerability for the 
 
 ## Pipeline Model
 
-The pipeline is **generic** — it runs against any bug directory passed to it and produces all artifacts inside that directory. The 3 issues (bug001, bug002, sec001) are demonstration examples proving the pipeline works for different types of problems.
+The pipeline is **generic** — accepts any bug directory and runs all 6 agents end-to-end.
+The only manual input is `bug-context.md` (seed file describing the observable symptom).
 
 ```
-run-pipeline.sh <bug-dir>
+./run-pipeline.sh <bug-dir>
 
-  Bug Researcher (manual)
+  Bug Researcher        → <bug-dir>/research/codebase-research.md
         ↓
-  Research Verifier  →  <bug-dir>/research/verified-research.md
+  Bug Research Verifier → <bug-dir>/research/verified-research.md
         ↓
-  Bug Planner (manual)
+  Bug Planner           → <bug-dir>/implementation-plan.md
         ↓
-  Bug Fixer          →  <bug-dir>/fix-summary.md
+  Bug Fixer             → <bug-dir>/fix-summary.md
         ↓
-  Security Verifier  →  <bug-dir>/security-report.md
+  Security Verifier     → <bug-dir>/security-report.md
         ↓
-  Unit Test Generator→  <bug-dir>/test-report.md
+  Unit Test Generator   → <bug-dir>/test-report.md
 ```
 
 ---
@@ -50,47 +51,38 @@ homework-4/
 ├── README.md
 ├── HOWTORUN.md
 ├── docker-compose.yml
-├── run-pipeline.sh                       ← generic: run-pipeline.sh <bug-dir>
+├── run-pipeline.sh                          ← ./run-pipeline.sh <bug-dir>
 ├── src/
 │   ├── main.go
 │   ├── go.mod
+│   ├── main_test.go
 │   └── Dockerfile
 ├── agents/
+│   ├── bug-researcher.agent.md
 │   ├── research-verifier.agent.md
+│   ├── bug-planner.agent.md
 │   ├── bug-fixer.agent.md
 │   ├── security-verifier.agent.md
 │   └── unit-test-generator.agent.md
 ├── skills/
-│   ├── research-quality-measurement.md
-│   └── unit-tests-FIRST.md
+│   ├── codebase-research-format.md          ← used by bug-researcher
+│   ├── research-quality-measurement.md      ← used by research-verifier
+│   ├── implementation-plan-format.md        ← used by bug-planner
+│   └── unit-tests-FIRST.md                  ← used by unit-test-generator
 ├── context/bugs/
 │   ├── bug001/
-│   │   ├── bug-context.md                ← manually authored seed
+│   │   ├── bug-context.md                   ← manually authored seed
 │   │   ├── research/
-│   │   │   ├── codebase-research.md      ← manual (pre-pipeline)
-│   │   │   └── verified-research.md      ← agent: research-verifier
-│   │   ├── implementation-plan.md        ← manual (pre-pipeline)
-│   │   ├── fix-summary.md                ← agent: bug-fixer
-│   │   ├── security-report.md            ← agent: security-verifier
-│   │   └── test-report.md                ← agent: unit-test-generator
+│   │   │   ├── codebase-research.md         ← agent: bug-researcher
+│   │   │   └── verified-research.md         ← agent: research-verifier
+│   │   ├── implementation-plan.md           ← agent: bug-planner
+│   │   ├── fix-summary.md                   ← agent: bug-fixer
+│   │   ├── security-report.md               ← agent: security-verifier
+│   │   └── test-report.md                   ← agent: unit-test-generator
 │   ├── bug002/
-│   │   ├── bug-context.md
-│   │   ├── research/
-│   │   │   ├── codebase-research.md
-│   │   │   └── verified-research.md
-│   │   ├── implementation-plan.md
-│   │   ├── fix-summary.md
-│   │   ├── security-report.md
-│   │   └── test-report.md
+│   │   └── (same structure)
 │   └── sec001/
-│       ├── bug-context.md
-│       ├── research/
-│       │   ├── codebase-research.md
-│       │   └── verified-research.md
-│       ├── implementation-plan.md
-│       ├── fix-summary.md
-│       ├── security-report.md
-│       └── test-report.md
+│       └── (same structure)
 └── docs/screenshots/
 ```
 
@@ -98,76 +90,66 @@ homework-4/
 
 ## Action Items (Ordered)
 
-### Phase 0 — Scaffold
+### Phase 0 — Scaffold ✅
 
-> All Phase 0 files are **manually authored** — the starting state the pipeline operates on, not agent outputs.
+> All Phase 0 files are **manually authored** — the starting state the pipeline operates on.
+> `bug-context.md` describes only the observable symptom — no code, no location, no fix hints.
+
+| # | Action | Status |
+|---|--------|--------|
+| 0.1 | `src/main.go` — Go HTTP service with 3 seeded issues | done |
+| 0.2 | `src/go.mod` | done |
+| 0.3 | `src/Dockerfile` — multi-stage build | done |
+| 0.4 | `docker-compose.yml` — exposes :8080, passes `API_KEY` env | done |
+| 0.5 | `src/main_test.go` — stub tests | done |
+| 0.6 | `context/bugs/bug001/bug-context.md` | done |
+| 0.7 | `context/bugs/bug002/bug-context.md` | done |
+| 0.8 | `context/bugs/sec001/bug-context.md` | done |
+
+### Phase 1 — Skills ✅
+
+| # | Action | Status |
+|---|--------|--------|
+| 1.1 | `skills/codebase-research-format.md` | done |
+| 1.2 | `skills/research-quality-measurement.md` | done |
+| 1.3 | `skills/implementation-plan-format.md` | done |
+| 1.4 | `skills/unit-tests-FIRST.md` | done |
+
+### Phase 2 — Agents
 
 | # | Action | Output |
 |---|--------|--------|
-| 0.1 | Create `src/main.go` — Go HTTP service with bug#1, bug#2, sec#1 seeded | `src/main.go` |
-| 0.2 | Create `src/go.mod` | `src/go.mod` |
-| 0.3 | Create `src/Dockerfile` — multi-stage build (golang:1.21-alpine → alpine:3.19) | `src/Dockerfile` |
-| 0.4 | Create `docker-compose.yml` — builds from `./src`, exposes :8080, passes `API_KEY` env | `docker-compose.yml` |
-| 0.5 | Create `src/main_test.go` — stub test file, compilable | `src/main_test.go` |
-| 0.6 | Verify `docker compose up --build` starts and `curl /time` responds | local run OK |
-| 0.7 | Create `context/bugs/bug001/bug-context.md` — manually authored seed | context file |
-| 0.8 | Create `context/bugs/bug002/bug-context.md` — manually authored seed | context file |
-| 0.9 | Create `context/bugs/sec001/bug-context.md` — manually authored seed | context file |
+| 2.1 | `agents/bug-researcher.agent.md` — model: claude-opus-4-8; reads bug-context + src; uses codebase-research-format skill; writes `research/codebase-research.md` | done |
+| 2.2 | `agents/research-verifier.agent.md` — model: claude-opus-4-8; reads codebase-research; uses research-quality-measurement skill; writes `research/verified-research.md` | — |
+| 2.3 | `agents/bug-planner.agent.md` — model: claude-sonnet-4-6; reads verified-research; uses implementation-plan-format skill; writes `implementation-plan.md` | done |
+| 2.4 | `agents/bug-fixer.agent.md` — model: claude-haiku-4-5-20251001; reads implementation-plan; applies fixes; runs tests via Docker; writes `fix-summary.md` | — |
+| 2.5 | `agents/security-verifier.agent.md` — model: claude-opus-4-8; reads fix-summary + src; rates CRITICAL/HIGH/MEDIUM/LOW/INFO; writes `security-report.md` | — |
+| 2.6 | `agents/unit-test-generator.agent.md` — model: claude-sonnet-4-6; reads fix-summary + src; uses FIRST skill; writes `test-report.md` | — |
 
-### Phase 1 — Skills
+### Phase 3 — Pipeline Runner
 
 | # | Action | Output |
 |---|--------|--------|
-| 1.1 | Create `skills/research-quality-measurement.md` — GOLD/SILVER/BRONZE/FAIL levels with criteria | skill file |
-| 1.2 | Create `skills/unit-tests-FIRST.md` — FIRST principles with checklist | skill file |
+| 3.1 | Create `run-pipeline.sh <bug-dir>` — runs all 6 agents in order | shell script |
+| 3.2 | `chmod +x run-pipeline.sh` | — |
+| 3.3 | Test: `./run-pipeline.sh context/bugs/bug001` end-to-end | — |
 
-### Phase 2 — Research Artifacts (manual, pre-pipeline)
-
-> Written by the developer per issue. Agents read these as input — not generated by agents.
-
-| # | Action | Output |
-|---|--------|--------|
-| 2.1 | Write `context/bugs/bug001/research/codebase-research.md` | research file |
-| 2.2 | Write `context/bugs/bug001/implementation-plan.md` | plan file |
-| 2.3 | Write `context/bugs/bug002/research/codebase-research.md` | research file |
-| 2.4 | Write `context/bugs/bug002/implementation-plan.md` | plan file |
-| 2.5 | Write `context/bugs/sec001/research/codebase-research.md` | research file |
-| 2.6 | Write `context/bugs/sec001/implementation-plan.md` | plan file |
-
-### Phase 3 — Agents
+### Phase 4 — Documentation & Screenshots
 
 | # | Action | Output |
 |---|--------|--------|
-| 3.1 | Create `agents/research-verifier.agent.md` — model: claude-opus-4-8; reads `$BUG_DIR/research/codebase-research.md`; uses research-quality skill; writes `$BUG_DIR/research/verified-research.md` | agent file |
-| 3.2 | Create `agents/bug-fixer.agent.md` — model: claude-haiku-4-5-20251001; reads `$BUG_DIR/implementation-plan.md` + `verified-research.md`; applies fixes; runs tests via Docker; writes `$BUG_DIR/fix-summary.md` | agent file |
-| 3.3 | Create `agents/security-verifier.agent.md` — model: claude-opus-4-8; reads `$BUG_DIR/fix-summary.md` + changed source; rates CRITICAL/HIGH/MEDIUM/LOW/INFO; writes `$BUG_DIR/security-report.md` | agent file |
-| 3.4 | Create `agents/unit-test-generator.agent.md` — model: claude-sonnet-4-6; reads `$BUG_DIR/fix-summary.md` + changed source; uses FIRST skill; generates/runs tests; writes `$BUG_DIR/test-report.md` | agent file |
+| 4.1 | `README.md` — author info, overview, pipeline usage, app run command | README |
+| 4.2 | `HOWTORUN.md` — prerequisites (Docker only), run app, run pipeline | HOWTORUN |
+| 4.3 | Screenshots for each of the 3 issues | `docs/screenshots/` |
 
-### Phase 4 — Pipeline Runner
-
-| # | Action | Output |
-|---|--------|--------|
-| 4.1 | Create `run-pipeline.sh <bug-dir>` — sequentially invokes all 4 agents for the given bug directory | shell script |
-| 4.2 | `chmod +x run-pipeline.sh` | — |
-| 4.3 | Test: `./run-pipeline.sh context/bugs/bug001` completes end-to-end | — |
-
-### Phase 5 — Documentation & Screenshots
+### Phase 5 — Verification & PR
 
 | # | Action | Output |
 |---|--------|--------|
-| 5.1 | Create `README.md` — author info, overview, pipeline usage, app run command | README |
-| 5.2 | Create `HOWTORUN.md` — prerequisites (Docker only), run app, run pipeline | HOWTORUN |
-| 5.3 | Screenshot: pipeline run for each of the 3 issues | `docs/screenshots/` |
-| 5.4 | Screenshot: `/time` before and after fix | `docs/screenshots/` |
-| 5.5 | Screenshot: security-report.md and test-report.md for one issue | `docs/screenshots/` |
-
-### Phase 6 — Verification & PR
-
-| # | Action | Output |
-|---|--------|--------|
-| 6.1 | `docker compose run --rm app go test ./...` — all tests green | — |
-| 6.2 | Verify all artifacts exist in each of the 3 bug dirs | — |
-| 6.3 | Open PR with summary, screenshots, author info | PR |
+| 5.1 | `docker compose run --rm app go test ./...` — all tests green | — |
+| 5.2 | Verify all 6 artifact files exist in each bug dir | — |
+| 5.3 | `./run-pipeline.sh` runs end-to-end for all 3 issues | — |
+| 5.4 | Open PR with summary, screenshots, author info | PR |
 
 ---
 
@@ -175,10 +157,12 @@ homework-4/
 
 | Agent | Model | Reason |
 |-------|-------|--------|
-| research-verifier | claude-opus-4-8 | Strong reasoning to detect subtle discrepancies in file:line references |
+| bug-researcher | claude-opus-4-8 | Root cause analysis requires strong reasoning over code |
+| research-verifier | claude-opus-4-8 | Fact-checking file:line references requires precision |
+| bug-planner | claude-sonnet-4-6 | Planning from verified facts — balanced capability |
 | bug-fixer | claude-haiku-4-5-20251001 | Routine mechanical edits; speed and cost matter |
-| security-verifier | claude-opus-4-8 | Security analysis requires nuanced judgment and low false-negative tolerance |
-| unit-test-generator | claude-sonnet-4-6 | Balanced: needs code understanding, not max reasoning |
+| security-verifier | claude-opus-4-8 | Security analysis requires nuanced judgment |
+| unit-test-generator | claude-sonnet-4-6 | Code understanding without max reasoning needed |
 
 ---
 
@@ -189,7 +173,6 @@ homework-4/
 ```go
 // BEFORE
 now := time.Now()
-
 // AFTER
 now := time.Now().UTC()
 ```
@@ -199,7 +182,6 @@ now := time.Now().UTC()
 ```go
 // BEFORE
 var uptimeSeconds int8 = 0
-
 // AFTER
 var uptimeSeconds int64 = 0
 ```
@@ -212,7 +194,6 @@ const apiKey = "supersecret-hardcoded-key-12345"
 func validate(r *http.Request) bool {
     return r.Header.Get("X-Api-Key") == apiKey
 }
-
 // AFTER
 func validate(r *http.Request) bool {
     key := os.Getenv("API_KEY")
