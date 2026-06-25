@@ -1,0 +1,9 @@
+services:
+  app:
+    build:
+      context: ./src
+      target: builder
+    ports:
+      - "8080:8080"
+    environment:
+      - API_KEY=${API_KEY:-supersecret-hardcoded-key-12345}
