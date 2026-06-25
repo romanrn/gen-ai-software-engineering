@@ -78,7 +78,11 @@ What function do you want to CREATE or UPDATE?
 What are details you want to add to drive the code changes?
 [Specific requirements and constraints]
 
+``` 
+
 ## Banking-Specific Specification Template
+
+```markdown
 
 # [Feature] Specification
 
@@ -159,6 +163,8 @@ What function do you want to CREATE or UPDATE?
 
 What are details you want to add to drive the code changes?
 [Business requirements]
+
+ ``` 
 
 ## API Development Specification Template
 
@@ -242,6 +248,8 @@ What function do you want to CREATE or UPDATE?
 What are details you want to add to drive the code changes?
 [Specific testing requirements]
 
+ ```
+
 ## Testing Specification Template
 
 ```markdown
@@ -324,6 +332,7 @@ What function do you want to CREATE or UPDATE?
 What are details you want to add to drive the code changes?
 [Specific performance requirements]
 
+```
 
 ## Prompt Engineering Best Practices
 
@@ -341,6 +350,7 @@ What are details you want to add to drive the code changes?
 - Mention audit trail needs
 - Include error handling requirements
 - Specify testing requirements
+
 
 ### Common Prompt Patterns
 
