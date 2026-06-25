@@ -8,10 +8,10 @@ import (
 )
 
 // BUG#1: uptimeSeconds uses int8 — overflows after 127 seconds
-var uptimeSeconds int8 = 0
+var uptimeSeconds int64 = 0
 
-// SEC#1: hardcoded API key — should come from environment
-const apiKey = "supersecret-hardcoded-key-12345"
+// SEC#1: API key loaded from environment variable API_KEY
+var apiKey = os.Getenv("API_KEY")
 
 var startTime time.Time
 
@@ -40,7 +40,7 @@ func timeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	now := time.Now()
+	now := time.Now().UTC()
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintf(w, `{"utc": "%s"}`, now.Format(time.RFC3339))
 }

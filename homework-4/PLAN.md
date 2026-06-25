@@ -136,10 +136,12 @@ Phase 4:
 
 ## Verification
 
-1. `docker compose up --build` — server starts on :8080
-2. `curl http://localhost:8080/time` — returns wrong timezone (bug#1 visible)
+1. `API_KEY=supersecret-hardcoded-key-12345 docker compose up --build` — server starts on :8080
+2. `curl -H "X-Api-Key: supersecret-hardcoded-key-12345" http://localhost:8080/time` — returns wrong timezone (bug#1 visible)
 3. `./run-pipeline.sh context/bugs/bug001` — all 6 agents run, all artifacts created
 4. `./run-pipeline.sh context/bugs/bug002` — same
 5. `./run-pipeline.sh context/bugs/sec001` — same
-6. `curl http://localhost:8080/time` — returns correct UTC after fixes
-7. `docker compose run --rm app go test ./...` — all tests green
+6. `docker compose down` — stop the running container
+7. `docker compose run --rm app go test ./...` — all tests green (against fixed code)
+8. `API_KEY=your-secret docker compose up --build` — rebuild image with fixed code, start server
+9. `curl -H "X-Api-Key: $API_KEY" http://localhost:8080/time` — returns correct UTC after fixes

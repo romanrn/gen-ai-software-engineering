@@ -146,10 +146,13 @@ homework-4/
 
 | # | Action | Output |
 |---|--------|--------|
-| 5.1 | `docker compose run --rm app go test ./...` — all tests green | — |
+| 5.1 | `./run-pipeline.sh` runs end-to-end for all 3 issues | — |
 | 5.2 | Verify all 6 artifact files exist in each bug dir | — |
-| 5.3 | `./run-pipeline.sh` runs end-to-end for all 3 issues | — |
-| 5.4 | Open PR with summary, screenshots, author info | PR |
+| 5.3 | `docker compose down` — stop the running container | — |
+| 5.4 | `docker compose run --rm app go test ./...` — all tests green (against fixed code) | — |
+| 5.5 | `docker compose up --build` — rebuild image with fixed code, start server | — |
+| 5.6 | `curl -H "X-Api-Key: $API_KEY" http://localhost:8080/time` — returns correct UTC after fixes | — |
+| 5.7 | Open PR with summary, screenshots, author info | PR |
 
 ---
 
